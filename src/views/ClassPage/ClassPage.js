@@ -1,7 +1,6 @@
 import React from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
-
 // import { Link } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -10,9 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 // import { Link } from "react-router-dom";
 
 // @material-ui/icons
-import Dashboard from "@material-ui/icons/Dashboard";
-import Schedule from "@material-ui/icons/Schedule";
-import List from "@material-ui/icons/List";
+import { Group, Work, Dashboard } from "@material-ui/icons";
 
 // core components
 import Header from "components/Header/Header.js";
@@ -25,15 +22,12 @@ import {
   MyCustomHeaderRightLinks,
 } from "components/Header/MyCustomHeaderLinks";
 import NavPills from "components/NavPills/NavPills.js";
-
-// import Card from "components/Card/Card.js";
-// import CardBody from "components/Card/CardBody.js";
-// import CardHeader from "components/Card/CardHeader.js";
-// import CardFooter from "components/Card/CardFooter.js";
 import Parallax from "components/Parallax/Parallax.js";
-// import MyCustomParallax from "components/Parallax/MyCustomParallax";
+import ClassActivity from "views/ClassPage/Sections/ClassActivity.js";
 
 import styles from "assets/jss/material-kit-react/views/classPage.js";
+
+import image from "assets/img/bg7.jpg";
 
 const useStyles = makeStyles(styles);
 
@@ -54,7 +48,12 @@ export default function ClassPage(props) {
         }}
         {...rest}
       />
-      <Parallax small filter image={require("assets/img/cms-img.jpg").default}>
+      <Parallax
+        small
+        filter
+        image={require("assets/img/cms-img.jpg").default}
+        className={classes.classParallax}
+      >
         <div className={classes.container}>
           <GridContainer>
             <GridItem>
@@ -66,96 +65,59 @@ export default function ClassPage(props) {
         </div>
       </Parallax>
       <div className={classNames(classes.main, classes.mainRaised)}>
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={10} className={classes.navWrapper}>
-            <NavPills
-              alignCenter
-              color="primary"
-              tabs={[
-                {
-                  tabButton: "Dashboard",
-                  tabIcon: Dashboard,
-                  tabContent: (
-                    <span>
-                      <p>
-                        Collaboratively administrate empowered markets via
-                        plug-and-play networks. Dynamically procrastinate B2C
-                        users after installed base benefits.
-                      </p>
-                      <br />
-                      <p>
-                        Dramatically visualize customer directed convergence
-                        without revolutionary ROI. Collaboratively administrate
-                        empowered markets via plug-and-play networks.
-                        Dynamically procrastinate B2C users after installed base
-                        benefits.
-                      </p>
-                      <br />
-                      <p>
-                        Dramatically visualize customer directed convergence
-                        without revolutionary ROI. Collaboratively administrate
-                        empowered markets via plug-and-play networks.
-                        Dynamically procrastinate B2C users after installed base
-                        benefits.
-                      </p>
-                    </span>
-                  ),
-                },
-                {
-                  tabButton: "Schedule",
-                  tabIcon: Schedule,
-                  tabContent: (
-                    <span>
-                      <p>
-                        Efficiently unleash cross-media information without
-                        cross-media value. Quickly maximize timely deliverables
-                        for real-time schemas.
-                      </p>
-                      <br />
-                      <p>
-                        Dramatically maintain clicks-and-mortar solutions
-                        without functional solutions. Dramatically visualize
-                        customer directed convergence without revolutionary ROI.
-                        Collaboratively administrate empowered markets via
-                        plug-and-play networks. Dynamically procrastinate B2C
-                        users after installed base benefits.
-                      </p>
-                    </span>
-                  ),
-                },
-                {
-                  tabButton: "Tasks",
-                  tabIcon: List,
-                  tabContent: (
-                    <span>
-                      <p>
-                        Collaboratively administrate empowered markets via
-                        plug-and-play networks. Dynamically procrastinate B2C
-                        users after installed base benefits.
-                      </p>
-                      <br />
-                      <p>
-                        Dramatically visualize customer directed convergence
-                        without revolutionary ROI. Collaboratively administrate
-                        empowered markets via plug-and-play networks.
-                        Dynamically procrastinate B2C users after installed base
-                        benefits.
-                      </p>
-                      <br />
-                      <p>
-                        Dramatically visualize customer directed convergence
-                        without revolutionary ROI. Collaboratively administrate
-                        empowered markets via plug-and-play networks.
-                        Dynamically procrastinate B2C users after installed base
-                        benefits.
-                      </p>
-                    </span>
-                  ),
-                },
-              ]}
-            />
-          </GridItem>
-        </GridContainer>
+        <div className={classes.container}>
+          <GridContainer>
+            <GridItem xs={12} sm={12} md={11} className={classes.navWrapper}>
+              <NavPills
+                alignCenter
+                color="primary"
+                tabs={[
+                  {
+                    tabButton: "Stream",
+                    tabIcon: Dashboard,
+                    tabContent: (
+                      <GridContainer justify={"center"}>
+                        <GridItem xs={12} sm={12} md={3}>
+                          <img
+                            alt="..."
+                            src={image}
+                            style={{ width: "100%" }}
+                          />
+                        </GridItem>
+                        <GridItem xs={12} sm={12} md={9}>
+                          <ClassActivity />
+                          <ClassActivity />
+                        </GridItem>
+                      </GridContainer>
+                    ),
+                  },
+                  {
+                    tabButton: "Classwork",
+                    tabIcon: Work,
+                    tabContent: (
+                      <GridContainer justify={"center"}>
+                        <GridItem xs={12} sm={12} md={8}>
+                          <p>Day la container classwork</p>
+                        </GridItem>
+                      </GridContainer>
+                    ),
+                  },
+                  {
+                    tabButton: "People",
+                    tabIcon: Group,
+                    tabContent: (
+                      <GridContainer justify={"center"}>
+                        <GridItem xs={12} sm={12} md={8}>
+                          <p>Day la container People</p>
+                        </GridItem>
+                      </GridContainer>
+                    ),
+                  },
+                ]}
+              />
+            </GridItem>
+          </GridContainer>
+        </div>
       </div>
     </div>
   );

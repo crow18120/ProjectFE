@@ -38,6 +38,9 @@ const classPageStyle = {
     margin: "20px auto 50px auto",
     textAlign: "center",
   },
+  classParallax: {
+    height: "240px",
+  },
 };
 
 export default classPageStyle;
