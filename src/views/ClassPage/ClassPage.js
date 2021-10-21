@@ -23,11 +23,13 @@ import {
 } from "components/Header/MyCustomHeaderLinks";
 import NavPills from "components/NavPills/NavPills.js";
 import Parallax from "components/Parallax/Parallax.js";
-import ClassActivity from "views/ClassPage/Sections/ClassActivity.js";
+
+import ClassActivity from "./Sections/ClassActivity.js";
+import ClassWork from "./Sections/ClassWork.js";
+import DeadlineWork from "./Sections/DeadlineWork";
 
 import styles from "assets/jss/material-kit-react/views/classPage.js";
-
-import image from "assets/img/bg7.jpg";
+import ClassPeople from "./Sections/ClassPeople.js";
 
 const useStyles = makeStyles(styles);
 
@@ -43,7 +45,7 @@ export default function ClassPage(props) {
         rightLinks={<MyCustomHeaderRightLinks />}
         fixed
         changeColorOnScroll={{
-          height: 200,
+          height: 100,
           color: "white",
         }}
         {...rest}
@@ -78,14 +80,11 @@ export default function ClassPage(props) {
                     tabContent: (
                       <GridContainer justify={"center"}>
                         <GridItem xs={12} sm={12} md={3}>
-                          <img
-                            alt="..."
-                            src={image}
-                            style={{ width: "100%" }}
-                          />
+                          <DeadlineWork />
                         </GridItem>
                         <GridItem xs={12} sm={12} md={9}>
                           <ClassActivity />
+                          <ClassWork />
                           <ClassActivity />
                         </GridItem>
                       </GridContainer>
@@ -97,7 +96,7 @@ export default function ClassPage(props) {
                     tabContent: (
                       <GridContainer justify={"center"}>
                         <GridItem xs={12} sm={12} md={8}>
-                          <p>Day la container classwork</p>
+                          <ClassWork />
                         </GridItem>
                       </GridContainer>
                     ),
@@ -108,7 +107,7 @@ export default function ClassPage(props) {
                     tabContent: (
                       <GridContainer justify={"center"}>
                         <GridItem xs={12} sm={12} md={8}>
-                          <p>Day la container People</p>
+                          <ClassPeople />
                         </GridItem>
                       </GridContainer>
                     ),
