@@ -6,7 +6,7 @@ import classNames from "classnames";
 import { makeStyles } from "@material-ui/core/styles";
 
 // react-router-dom
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // @material-ui/icons
 import { Group, Work, Dashboard } from "@material-ui/icons";
@@ -60,7 +60,9 @@ export default function ClassPage(props) {
           <GridContainer>
             <GridItem>
               <div className={classes.brand}>
-                <h1 className={classes.title}>Course Management System</h1>
+                <Link to="/class-page">
+                  <h1 className={classes.title}>Course Management System</h1>
+                </Link>
               </div>
             </GridItem>
           </GridContainer>

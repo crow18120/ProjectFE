@@ -23,7 +23,7 @@ const useStyles = makeStyles(styles);
 export default function ClassWork() {
   const classes = useStyles();
   return (
-    <Link to="/">
+    <Link to="/submission-page">
       <Card className={classes.card + " " + classes.cardClassWork}>
         <CardHeader
           color="primary"

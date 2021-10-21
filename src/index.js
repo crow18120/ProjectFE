@@ -14,6 +14,7 @@ import MyLoginPage from "views/Test/MyLoginPage.js";
 import MyProfilePage from "views/Test/MyProfilePage.js";
 import HomePage from "views/Test/HomePage.js";
 import ClassPage from "views/ClassPage/ClassPage";
+import SubmissionPage from "views/SubmissionPage/SubmissionPage";
 var hist = createBrowserHistory();
 
 ReactDOM.render(
@@ -25,6 +26,7 @@ ReactDOM.render(
       <Route path="/login-page" component={MyLoginPage} />
       <Route path="/home-page" component={HomePage} />
       <Route path="/class-page" component={ClassPage} />
+      <Route path="/submission-page" component={SubmissionPage} />
       <Route path="/" component={Components} />
     </Switch>
   </Router>,

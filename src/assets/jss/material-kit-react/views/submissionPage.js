@@ -1,6 +1,6 @@
 import { container, title } from "assets/jss/material-kit-react.js";
 
-const classPageStyle = {
+const submissionPageStyle = {
   "@global": {
     body: { backgroundColor: "#EEEEEE" },
   },
@@ -45,6 +45,25 @@ const classPageStyle = {
   classParallax: {
     height: "240px",
   },
+  infoSubmission: {
+    margin: "1.875rem 0rem 1rem 0rem",
+    textAlign: "left",
+    color: "#000",
+    borderBottom: "0.0625rem solid #dadce0",
+    "& h2": {
+      color: "#9c27b0",
+      fontWeight: "400",
+      borderBottom: "0.0625rem solid #9c27b0",
+      position: "relative",
+    },
+  },
+  btnSubmission: {
+    position: "absolute",
+    right: "0",
+  },
+  deadlineTimer: {
+    color: "red",
+  },
 };
 
-export default classPageStyle;
+export default submissionPageStyle;

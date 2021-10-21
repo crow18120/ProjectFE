@@ -47,6 +47,7 @@ export default function CustomDropdown(props) {
   const {
     buttonText,
     buttonIcon,
+    btnIcon,
     dropdownList,
     buttonProps,
     dropup,
@@ -91,6 +92,7 @@ export default function CustomDropdown(props) {
           onClick={handleClick}
         >
           {icon}
+          {btnIcon}
           {buttonText !== undefined ? buttonText : null}
           {caret ? <b className={caretClasses} /> : null}
         </Button>
