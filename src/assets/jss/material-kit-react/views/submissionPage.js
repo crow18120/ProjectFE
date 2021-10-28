@@ -33,6 +33,7 @@ const submissionPageStyle = {
     zIndex: "3",
   },
   mainRaised: {
+    minHeight: "90vh",
     margin: "-60px 30px 0px",
     borderRadius: "6px",
     boxShadow:
@@ -63,6 +64,15 @@ const submissionPageStyle = {
   },
   deadlineTimer: {
     color: "red",
+  },
+  materialContainer: {
+    justifyContent: "space-between",
+    paddingLeft: "1rem",
+    width: "100%",
+  },
+  materialItem: {
+    padding: "0.5rem 0.5rem",
+    margin: "0",
   },
 };
 

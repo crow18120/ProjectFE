@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 // core components
 
-import styles from "assets/jss/material-kit-react/views/componentsSections/classActivityStyle.js";
+import styles from "assets/jss/material-kit-react/views/classSections/classActivityStyle.js";
 
 import ClassPerson from "./ClassPerson";
 

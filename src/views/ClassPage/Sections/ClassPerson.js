@@ -8,7 +8,7 @@ import Button from "components/CustomButtons/Button.js";
 import GridContainer from "components/Grid/GridContainer";
 import GridItem from "components/Grid/GridItem";
 
-import styles from "assets/jss/material-kit-react/views/componentsSections/classActivityStyle.js";
+import styles from "assets/jss/material-kit-react/views/classSections/classActivityStyle.js";
 
 import image from "assets/img/bg7.jpg";
 

@@ -27,9 +27,11 @@ import Parallax from "components/Parallax/Parallax.js";
 import ClassActivity from "./Sections/ClassActivity.js";
 import ClassWork from "./Sections/ClassWork.js";
 import DeadlineWork from "./Sections/DeadlineWork";
+import ClassPeople from "./Sections/ClassPeople.js";
+import AddClassActivity from "./Sections/AddClassActivity.js";
+import AddClassWork from "./Sections/AddClassWork.js";
 
 import styles from "assets/jss/material-kit-react/views/classPage.js";
-import ClassPeople from "./Sections/ClassPeople.js";
 
 const useStyles = makeStyles(styles);
 
@@ -85,9 +87,12 @@ export default function ClassPage(props) {
                           <DeadlineWork />
                         </GridItem>
                         <GridItem xs={12} sm={12} md={9}>
+                          <AddClassActivity />
                           <ClassActivity />
                           <ClassWork />
+                          <ClassWork />
                           <ClassActivity />
+                          <ClassWork />
                         </GridItem>
                       </GridContainer>
                     ),
@@ -97,7 +102,10 @@ export default function ClassPage(props) {
                     tabIcon: Work,
                     tabContent: (
                       <GridContainer justify={"center"}>
-                        <GridItem xs={12} sm={12} md={8}>
+                        <GridItem xs={12} sm={12} md={9}>
+                          <AddClassWork />
+                          <ClassWork />
+                          <ClassWork />
                           <ClassWork />
                         </GridItem>
                       </GridContainer>

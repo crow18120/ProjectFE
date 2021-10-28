@@ -33,6 +33,7 @@ const classPageStyle = {
     zIndex: "3",
   },
   mainRaised: {
+    minHeight: "90vh",
     margin: "-60px 30px 0px",
     borderRadius: "6px",
     boxShadow:

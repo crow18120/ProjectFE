@@ -14,7 +14,7 @@ import CardFooter from "components/Card/CardFooter";
 import GridContainer from "components/Grid/GridContainer";
 import GridItem from "components/Grid/GridItem";
 
-import styles from "assets/jss/material-kit-react/views/componentsSections/classActivityStyle.js";
+import styles from "assets/jss/material-kit-react/views/classSections/classActivityStyle.js";
 
 const useStyles = makeStyles(styles);
 

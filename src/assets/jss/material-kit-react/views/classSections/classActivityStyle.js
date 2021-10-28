@@ -1,9 +1,25 @@
-import typographyStyle from "./typographyStyle";
+import typographyStyle from "../componentsSections/typographyStyle";
 
 const classActivityStyle = {
   ...typographyStyle,
   card: {
     padding: "0.5rem 0rem",
+  },
+  cardAdd: {
+    background: "#9c27b087",
+    transition: "ease .4s",
+    cursor: "pointer",
+    boxShadow: "0 4px 15px 0 rgba(116, 79, 168, 0.75)",
+    backgroundImage:
+      "linear-gradient(to right, #667eea, #764ba2, #6B8DD6, #8E37D7)",
+    backgroundSize: "300% 100%",
+    "&:hover": {
+      backgroundPosition: "100% 0",
+      transition: "ease .4s",
+    },
+  },
+  cardAddWork: {
+    width: "fit-content",
   },
   cardHeader: {
     width: "auto",
@@ -68,12 +84,15 @@ const classActivityStyle = {
     width: "100%",
   },
   materialItem: {
+    margin: "0rem",
+    padding: "0.5rem 0.5rem",
+  },
+  itemFile: {
+    margin: "0",
     borderRadius: "0.5rem",
     border: "0.0625rem solid #dadce0",
-    margin: "0.5rem 0rem",
   },
   iconFile: {
-    width: "70px",
     padding: "0.5rem",
     display: "flex",
     alignItems: "center",
@@ -159,6 +178,10 @@ const classActivityStyle = {
     "& svg": {
       color: "#3c4043",
     },
+  },
+  btnEditOrDelete: {
+    position: "absolute",
+    right: "3.25rem",
   },
   groupUser: {
     margin: "30px 0px",

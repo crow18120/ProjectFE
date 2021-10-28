@@ -3,6 +3,7 @@ import { container, title } from "assets/jss/material-kit-react.js";
 import modalStyle from "assets/jss/material-kit-react/modalStyle.js";
 import tooltipsStyle from "assets/jss/material-kit-react/tooltipsStyle.js";
 import popoverStyles from "assets/jss/material-kit-react/popoverStyles.js";
+import customCheckboxRadioSwitch from "assets/jss/material-kit-react/customCheckboxRadioSwitch.js";
 
 const javascriptStyles = {
   section: {
@@ -34,9 +35,37 @@ const javascriptStyles = {
   },
   ...tooltipsStyle,
   ...popoverStyles,
+  ...customCheckboxRadioSwitch,
   datepickerRoot: {
     "& .inputDatepicker": {
       paddingBottom: "27px",
+    },
+  },
+  myFormWidth: {
+    minWidth: "50vw",
+  },
+  modalFooterActivity: {
+    justifyContent: "space-between",
+    padding: "0px 24px 15px 24px",
+  },
+  modalFooterActivityLeft: {
+    paddingLeft: "0.5rem",
+  },
+  inputFile: {
+    position: "absolute",
+    display: "none",
+  },
+  materialContainer: {
+    justifyContent: "space-between",
+    paddingLeft: "1rem",
+    width: "100%",
+  },
+  materialItem: {
+    padding: "0.5rem 0.5rem",
+    margin: "0",
+    "&:last-child": {
+      paddingBottom: "1rem",
+      borderBottom: "0.0625rem solid #dadce0",
     },
   },
 };
