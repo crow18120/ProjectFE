@@ -12,10 +12,9 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
-import ConfirmDialog from "components/Dialog/MyConfirmDialog";
 import Danger from "components/Typography/Danger.js";
 
-import styles from "assets/jss/material-kit-react/views/submissionSections/submissionStyle.js";
+import styles from "assets/jss/material-kit-react/views/classWorkSections/classWorkStyle.js";
 import Success from "components/Typography/Success";
 import Warning from "components/Typography/Warning";
 
@@ -23,12 +22,6 @@ const useStyles = makeStyles(styles);
 
 export default function ViewSubmission() {
   const classes = useStyles();
-  const [confirmDialog, setConfirmDialog] = React.useState({
-    isOpen: false,
-    title: "",
-    subTitle: "",
-    attachment: [],
-  });
 
   return (
     <Card className={classes.card}>
@@ -52,16 +45,12 @@ export default function ViewSubmission() {
         </GridContainer>
       </CardBody>
       <CardFooter className={classes.cardFooter}>
-        <Link path="/" className={classes.linkView}>
+        <Link to="/submission-page" className={classes.linkView}>
           <Button color="rose" className={classes.btnSubmit}>
             View
           </Button>
         </Link>
       </CardFooter>
-      <ConfirmDialog
-        confirmDialog={confirmDialog}
-        setConfirmDialog={setConfirmDialog}
-      />
     </Card>
   );
 }

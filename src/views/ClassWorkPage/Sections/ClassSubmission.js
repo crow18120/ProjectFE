@@ -17,7 +17,7 @@ import ConfirmDialog from "components/Dialog/MyConfirmDialog";
 
 import SubmissionMaterial from "./SubmissionMaterial";
 
-import styles from "assets/jss/material-kit-react/views/submissionSections/submissionStyle.js";
+import styles from "assets/jss/material-kit-react/views/classWorkSections/classWorkStyle.js";
 
 const useStyles = makeStyles(styles);
 

@@ -7,7 +7,7 @@ import { Description, Close } from "@material-ui/icons";
 // core components
 // import Button from "components/CustomButtons/Button.js";
 
-import styles from "assets/jss/material-kit-react/views/submissionSections/submissionStyle.js";
+import styles from "assets/jss/material-kit-react/views/classWorkSections/classWorkStyle.js";
 import GridContainer from "components/Grid/GridContainer";
 import GridItem from "components/Grid/GridItem";
 
