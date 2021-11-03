@@ -51,6 +51,11 @@ const headerStyle = {
   flex: {
     flex: 1,
   },
+  isViewSubFile: {
+    margin: "0 !important",
+    height: "10vh !important",
+    minHeight: "75px !important",
+  },
   title: {
     ...defaultFont,
     lineHeight: "30px",

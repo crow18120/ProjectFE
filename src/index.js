@@ -16,6 +16,8 @@ import HomePage from "views/Test/HomePage.js";
 import ClassPage from "views/ClassPage/ClassPage";
 import ClassWorkPage from "views/ClassWorkPage/ClassWorkPage";
 import SubmissionPage from "views/SubmissionPage/SubmissionPage";
+import ViewSubmissionPage from "views/ViewSubmissionPage/ViewSubmissionPage";
+import ViewSubFile from "views/ViewSubmissionPage/Sections/ViewSubFile";
 var hist = createBrowserHistory();
 
 ReactDOM.render(
@@ -29,6 +31,8 @@ ReactDOM.render(
       <Route path="/class-page" component={ClassPage} />
       <Route path="/classwork-page" component={ClassWorkPage} />
       <Route path="/submission-page" component={SubmissionPage} />
+      <Route path="/view-sub-page" component={ViewSubmissionPage} />
+      <Route path="/view-sub-file" component={ViewSubFile} />
       <Route path="/" component={Components} />
     </Switch>
   </Router>,

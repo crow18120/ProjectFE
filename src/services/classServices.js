@@ -26,6 +26,13 @@ export const addMaterialActivity = async (data) => {
   });
 };
 
+export const getFile = async (id) => {
+  id = "6b08e7c8-c32c-4886-b01c-8be07dd0f8c5";
+  return await axios
+    .get("http://127.0.0.1:8000/activities/ac-material/" + id + "/", {})
+    .then((res) => res);
+};
+
 // export const getStudent = async (id) => {
 //   return await axios
 //     .get(getStudentsEndPointTest, {
