@@ -9,6 +9,7 @@ specifiers:
   '@date-io/date-fns': 1.x
   '@material-ui/core': 4.11.4
   '@material-ui/icons': 4.11.2
+  '@material-ui/lab': ^4.0.0-alpha.60
   '@material-ui/pickers': ^3.3.10
   axios: ^0.24.0
   classnames: 2.3.1
@@ -44,6 +45,7 @@ dependencies:
   '@date-io/date-fns': 1.3.13_date-fns@2.25.0
   '@material-ui/core': 4.11.4_react-dom@17.0.2+react@17.0.2
   '@material-ui/icons': 4.11.2_f543984b3e6c18c2e2e104a9ecbda934
+  '@material-ui/lab': 4.0.0-alpha.60_f543984b3e6c18c2e2e104a9ecbda934
   '@material-ui/pickers': 3.3.10_601c9bb7a0a7075d48d68db32c711737
   axios: 0.24.0
   classnames: 2.3.1
@@ -2558,6 +2560,28 @@ packages:
       '@material-ui/core': 4.11.4_react-dom@17.0.2+react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
+    dev: false
+
+  /@material-ui/lab/4.0.0-alpha.60_f543984b3e6c18c2e2e104a9ecbda934:
+    resolution: {integrity: sha512-fadlYsPJF+0fx2lRuyqAuJj7hAS1tLDdIEEdov5jlrpb5pp4b+mRDUqQTUxi4inRZHS1bEXpU8QWUhO6xX88aA==}
+    engines: {node: '>=8.0.0'}
+    peerDependencies:
+      '@material-ui/core': ^4.12.1
+      '@types/react': ^16.8.6 || ^17.0.0
+      react: ^16.8.0 || ^17.0.0
+      react-dom: ^16.8.0 || ^17.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.15.4
+      '@material-ui/core': 4.11.4_react-dom@17.0.2+react@17.0.2
+      '@material-ui/utils': 4.11.2_react-dom@17.0.2+react@17.0.2
+      clsx: 1.1.1
+      prop-types: 15.7.2
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-is: 17.0.2
     dev: false
 
   /@material-ui/pickers/3.3.10_601c9bb7a0a7075d48d68db32c711737:

@@ -1,4 +1,8 @@
 import React from "react";
+import {
+  // useHistory,
+  Redirect,
+} from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -16,10 +20,13 @@ import CardBody from "components/Card/CardBody.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
+import Notification from "components/MyNotifications/Notification.js";
 
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 
 import image from "assets/img/bg7.jpg";
+
+import { loginService } from "services/userServices";
 
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -29,7 +36,7 @@ const useStyles = makeStyles(styles);
 const validationSchema = yup.object({
   username: yup
     .string()
-    .min(6, "Too Short!")
+    .min(5, "Too Short!")
     .max(50, "Too Long!")
     .required("Username is required"),
   password: yup
@@ -39,28 +46,41 @@ const validationSchema = yup.object({
     .required("Password is requried"),
 });
 
-const myInitialValues = {
+const myInitialValues = Object.freeze({
   username: "",
   password: "",
-};
+});
 
 export default function LoginPage(props) {
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+  const [notify, setNotify] = React.useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+
   setTimeout(function () {
     setCardAnimation("");
   }, 700);
+
   const classes = useStyles();
+
   const { ...rest } = props;
 
   const formik = useFormik({
     initialValues: myInitialValues,
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      const isLoginSuccess = await loginService(values);
+      console.log(isLoginSuccess);
     },
   });
 
-  return (
+  const token = localStorage.getItem("access_token");
+
+  return token ? (
+    <Redirect to="/home-page" />
+  ) : (
     <div>
       <Header
         absolute
@@ -150,6 +170,7 @@ export default function LoginPage(props) {
           </GridContainer>
         </div>
       </div>
+      <Notification notify={notify} setNotify={setNotify} />
     </div>
   );
 }

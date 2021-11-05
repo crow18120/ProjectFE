@@ -1,7 +1,7 @@
 /*eslint-disable*/
 import React from "react";
 // react components for routing our app without refresh
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -14,6 +14,7 @@ import { Notifications, Event } from "@material-ui/icons";
 // core components
 import CustomDropdown from "components/CustomDropdown/CustomDropdown.js";
 import Button from "components/CustomButtons/Button.js";
+import { logoutService } from "services/userServices.js";
 
 import styles from "assets/jss/material-kit-react/components/myCustomHeaderLinksStyle.js";
 
@@ -34,6 +35,17 @@ export function MyCustomHeaderLeftLinks(props) {
 
 export function MyCustomHeaderRightLinks(props) {
   const classes = useStyles();
+  const history = useHistory();
+  const [isSignIn, setIsSignIn] = React.useState(false);
+  const handleSignOut = async () => {
+    await logoutService();
+    history.push("/login-page");
+  };
+
+  React.useEffect(() => {
+    setIsSignIn(localStorage.getItem("access_token"));
+  });
+
   return (
     <List className={classes.list}>
       <ListItem className={classes.listItem}>
@@ -65,9 +77,19 @@ export function MyCustomHeaderRightLinks(props) {
             { divider: true },
             "Change Password",
             { divider: true },
-            <Link to={"/login-page"} className={classes.link}>
-              Logout
-            </Link>,
+            isSignIn ? (
+              <span
+                style={{ display: "block" }}
+                key="edit-info"
+                onClick={() => handleSignOut()}
+              >
+                Sign out
+              </span>
+            ) : (
+              <Link to={"/login-page"} className={classes.link}>
+                Sign in
+              </Link>
+            ),
           ]}
         />
       </ListItem>
