@@ -72,14 +72,25 @@ export default function LoginPage(props) {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       const isLoginSuccess = await loginService(values);
-      console.log(isLoginSuccess);
+      isLoginSuccess == false
+        ? setNotify({
+            isOpen: true,
+            message: "Login false. Wrong username or password...",
+            type: "error",
+          })
+        : null;
     },
   });
 
   const token = localStorage.getItem("access_token");
 
   return token ? (
-    <Redirect to="/home-page" />
+    <Redirect
+      to={{
+        pathname: "/home-page",
+        state: { isLogin: true },
+      }}
+    />
   ) : (
     <div>
       <Header

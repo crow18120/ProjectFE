@@ -28,8 +28,8 @@ ReactDOM.render(
       <Route path="/profile-page" component={MyProfilePage} />
       <Route path="/login-page" component={MyLoginPage} />
       <Route path="/home-page" component={HomePage} />
-      <Route path="/class-page" component={ClassPage} />
-      <Route path="/classwork-page" component={ClassWorkPage} />
+      <Route path="/class-page/:id" component={ClassPage} />
+      <Route path="/classwork-page/:id" component={ClassWorkPage} />
       <Route path="/submission-page" component={SubmissionPage} />
       <Route path="/view-sub-page" component={ViewSubmissionPage} />
       <Route path="/view-sub-file" component={ViewSubFile} />

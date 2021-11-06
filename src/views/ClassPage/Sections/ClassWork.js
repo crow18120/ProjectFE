@@ -20,41 +20,45 @@ import image from "assets/img/bg7.jpg";
 
 const useStyles = makeStyles(styles);
 
-export default function ClassWork() {
+export default function ClassWork(props) {
   const classes = useStyles();
+  const { id, created, deadline, description } = props;
   return (
-    <Link to="/classwork-page">
+    <Link to={`/classwork-page/${id}`}>
       <Card className={classes.card + " " + classes.cardClassWork}>
         <CardHeader
           color="primary"
           className={classes.cardHeader + " " + classes.cardHeaderClassWork}
         >
           <GridContainer className={classes.cardHeaderContainer}>
-            <GridItem xs={12} sm={12} md={2} className={classes.avatar}>
+            <GridItem xs={2} sm={2} md={2} className={classes.avatar}>
               <img
                 src={image}
                 alt="..."
                 className={classes.imgRoundedCircle + " " + classes.imgFluid}
               />
             </GridItem>
-            <GridItem xs={12} sm={12} md={10}>
+            <GridItem xs={10} sm={10} md={10}>
               <p className={classes.name}>Đây là tên Activity.</p>
-              <p className={classes.timer}>Đây là thời gian.</p>
+              <p className={classes.timer}>
+                {new Date(created).toLocaleString("en-US")}
+              </p>
             </GridItem>
           </GridContainer>
         </CardHeader>
-        <CardBody
-          className={classes.cardBody + " " + classes.cardBodyClassWork}
+        {description == null ? null : (
+          <CardBody className={classes.cardBody}>
+            <p>{description}</p>
+          </CardBody>
+        )}
+        <CardFooter
+          className={classes.cardFooter + " " + classes.cardFooterClassWork}
         >
-          <p>
-            Đây là Thông báo nội dung của activity. Đây là Thông báo nội dung
-            của activity. Đây là Thông báo nội dung của activity. Đây là Thông
-            báo nội dung của activity.{" "}
-          </p>
-        </CardBody>
-        <CardFooter className={classes.cardFooter}>
           <p className={classes.deadlineTimer}>
-            Deadline: Đây là thời hạn nộp bài.
+            Deadline:{" "}
+            {deadline == null
+              ? "No due date"
+              : new Date(deadline).toLocaleString("en-US")}
           </p>
         </CardFooter>
       </Card>

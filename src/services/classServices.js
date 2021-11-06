@@ -1,4 +1,81 @@
 import axios from "axios";
+import axiosInstance from "./axios.js";
+import { decodeJwtToken, getRole } from "./userServices.js";
+
+const MockDataClassList = [
+  {
+    course: {
+      id: "1",
+      name: "Web Design & Development",
+    },
+    id: "1",
+    name: "GCH0714",
+  },
+  {
+    course: {
+      id: "2",
+      name: "Advance Programming",
+    },
+    id: "2",
+    name: "GCH0715",
+  },
+  {
+    course: {
+      id: "1",
+      name: "Web Design & Development",
+    },
+    id: "3",
+    name: "GCH0715",
+  },
+  {
+    course: {
+      id: "3",
+      name: "Internet of Things",
+    },
+    id: "4",
+    name: "GCH0716",
+  },
+  {
+    course: {
+      id: "2",
+      name: "Advance Programming",
+    },
+    id: "5",
+    name: "GCH0717",
+  },
+  {
+    course: {
+      id: "1",
+      name: "Web Design & Development",
+    },
+    id: "6",
+    name: "GCH0718",
+  },
+];
+
+export const getAllClass = async () => {
+  const payload = decodeJwtToken();
+  const role = getRole();
+  switch (role) {
+    case "student":
+      return await axiosInstance
+        .get("classes/class-student/" + payload.account_id + "/")
+        .then((response) => response.data)
+        .then((data) => data.map((ele) => ele.class_obj));
+    case "tutor":
+      return await axiosInstance
+        .get("classes/class-tutor/" + payload.account_id + "/")
+        .then((response) => response.data);
+    case "staff":
+      return "abc";
+    case null:
+      return MockDataClassList;
+  }
+  return await axiosInstance
+    .get("classes/class-student/" + payload.account_id + "/")
+    .then((response) => response.data)
+    .then((data) => data.map((ele) => ele.class_obj));
+};
 
 export const addMaterialActivity = async (data) => {
   let fd = new FormData();

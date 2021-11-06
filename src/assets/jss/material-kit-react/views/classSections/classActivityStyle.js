@@ -135,8 +135,8 @@ const classActivityStyle = {
   cardHeaderClassWork: {
     backgroundColor: "inherit",
   },
-  cardBodyClassWork: {
-    borderBottom: "0.0625rem solid #dadce0",
+  cardFooterClassWork: {
+    borderTop: "0.0625rem solid #dadce0",
   },
   cardHeaderDeadline: {
     padding: "0.75rem 1rem 0.25rem 1rem",

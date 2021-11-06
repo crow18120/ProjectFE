@@ -3,8 +3,9 @@ import React from "react";
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
+import { CircularProgress, Box } from "@material-ui/core";
 // react-router-dom
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 // @material-ui/icons
 
 // core components
@@ -23,44 +24,40 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
 import Parallax from "components/Parallax/Parallax.js";
 import MyCustomParallax from "components/Parallax/MyCustomParallax";
+import Notification from "components/MyNotifications/Notification.js";
 
 import styles from "assets/jss/material-kit-react/views/homePage.js";
 
-// import image from "assets/img/faces/avatar.jpg";
+import { getAllClass } from "services/classServices";
+import { getRole } from "services/userServices";
+import { usePromiseResult } from "use-promise-result";
 
 const useStyles = makeStyles(styles);
 
-const classList = [
-  {
-    id: "1",
-    course: "Web Design & Development",
-    class: "GCH0714",
-  },
-  {
-    id: "2",
-    course: "Web Design & Development",
-    class: "GCH0715",
-  },
-  {
-    id: "3",
-    course: "Internet of Things",
-    class: "GCH0714",
-  },
-  {
-    id: "4",
-    course: "Internet of Things",
-    class: "GCH0716",
-  },
-  {
-    id: "5",
-    course: "Programming Advance",
-    class: "GCH0714",
-  },
-];
-
 export default function ProfilePage(props) {
   const classes = useStyles();
+  const location = useLocation();
+
+  const { success, data } = usePromiseResult(() => getAllClass());
+
+  console.log(data);
   const { ...rest } = props;
+
+  const [notify, setNotify] = React.useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+
+  React.useEffect(() => {
+    location.state
+      ? setNotify({
+          isOpen: true,
+          message: "Hello user. Welcome to CMS.",
+          type: "success",
+        })
+      : null;
+  }, [location.state]);
 
   return (
     <div>
@@ -87,38 +84,59 @@ export default function ProfilePage(props) {
         </div>
       </Parallax>
       <div className={classNames(classes.main, classes.mainRaised)}>
-        <GridContainer>
-          {classList.map((item) => (
-            <GridItem xs={12} sm={12} md={3} key={item.id}>
-              <Card className={classes.card}>
-                <CardHeader className={classes.cardHeader}>
-                  <MyCustomParallax
-                    image={require("assets/img/cms-img.jpg").default}
-                    exSmall
-                    className={
-                      classes.myParallax +
-                      " " +
-                      classes.imgRounded +
-                      " " +
-                      classes.imgFluid
-                    }
-                  />
-                </CardHeader>
-                <CardBody className={classes.cardBody}>
-                  <h4>{item.course}</h4>
-                  <h6>{item.class}</h6>
-                </CardBody>
-                <CardFooter className={classes.cardFooter}>
-                  <Button simple color="primary" size="lg">
-                    <Link to="/class-page">View</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            </GridItem>
-          ))}
-        </GridContainer>
+        {success ? (
+          <GridContainer>
+            {data.map((item) => (
+              <GridItem xs={12} sm={12} md={3} key={item.id}>
+                <Card className={classes.card}>
+                  <CardHeader className={classes.cardHeader}>
+                    <MyCustomParallax
+                      image={require("assets/img/cms-img.jpg").default}
+                      exSmall
+                      className={
+                        classes.myParallax +
+                        " " +
+                        classes.imgRounded +
+                        " " +
+                        classes.imgFluid
+                      }
+                    />
+                  </CardHeader>
+                  <CardBody className={classes.cardBody}>
+                    <h4>{item.course.name}</h4>
+                    <h6>{item.name}</h6>
+                  </CardBody>
+                  <CardFooter className={classes.cardFooter}>
+                    <Button simple color="primary" size="lg">
+                      {getRole() == null ? (
+                        <Link to={"/login-page"}>View</Link>
+                      ) : (
+                        <Link
+                          to={{
+                            pathname: `/class-page/${item.id}`,
+                            state: {
+                              course: item.course.name,
+                              class: item.name,
+                            },
+                          }}
+                        >
+                          View
+                        </Link>
+                      )}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </GridItem>
+            ))}
+          </GridContainer>
+        ) : (
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <CircularProgress />
+          </Box>
+        )}
       </div>
       <Footer />
+      <Notification notify={notify} setNotify={setNotify} />
     </div>
   );
 }

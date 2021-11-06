@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // react-router-dom
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 // @material-ui/icons
 import { MoreVert } from "@material-ui/icons";
@@ -29,37 +29,22 @@ import ViewSubmission from "./Sections/ViewSubmission";
 
 import styles from "assets/jss/material-kit-react/views/classWorkPage.js";
 
+import { getRole } from "services/userServices.js";
+import { getActivity } from "services/activityServices";
+import { usePromiseResult } from "use-promise-result";
 const useStyles = makeStyles(styles);
-
-const materials = [
-  {
-    id: "1",
-    name: "Đây là tên file. Đây là tên file. Đây là tên file.",
-    type: "Đây là dạng file.",
-  },
-  {
-    id: "2",
-    name: "Đây là tên file. Đây là tên file. Đây là tên file.",
-    type: "Đây là dạng file.",
-  },
-  {
-    id: "3",
-    name: "Đây là tên file. Đây là tên file. Đây là tên file.",
-    type: "Đây là dạng file.",
-  },
-];
-
-const initialValues = {
-  title: "Đây là tên classwork",
-  description:
-    "Đây là hướng dẫn (Descriptions). Đây là hướng dẫn (Descriptions). Đây là hướng dẫn (Descriptions). Đây là hướng dẫn (Descriptions). Đây là hướng dẫn (Descriptions). Đây là hướng dẫn (Descriptions). Đây là hướng dẫn (Descriptions)",
-  file: materials,
-  dueDate: new Date().toString(),
-};
 
 export default function ClassWorkPage(props) {
   const classes = useStyles();
+
+  const { id } = useParams();
+
+  const role = getRole();
+
+  const { data, success } = usePromiseResult(() => getActivity(id));
+
   const [classicModal, setClassicModal] = React.useState(false);
+
   const [confirmDialog, setConfirmDialog] = React.useState({
     isOpen: false,
     title: "",
@@ -67,9 +52,29 @@ export default function ClassWorkPage(props) {
     attachment: [],
   });
 
+  const [initialValues, setInitialValues] = React.useState({
+    title: "",
+    description: "",
+    file: [],
+    dueDate: null,
+  });
+
+  useEffect(() => {
+    success
+      ? setInitialValues({
+          title: data.name,
+          description: data.description,
+          file: data.materials,
+          dueDate: data.deadline_date,
+        })
+      : null;
+  }, [success]);
+
+  console.log(data);
+
   const { ...rest } = props;
 
-  return (
+  return success ? (
     <div>
       <Header
         color="transparent"
@@ -92,8 +97,10 @@ export default function ClassWorkPage(props) {
           <GridContainer>
             <GridItem>
               <div className={classes.brand}>
-                <Link to="/class-page">
-                  <h1 className={classes.title}>Course Management System</h1>
+                <Link to={`/class-page/${data.class_obj.id}`}>
+                  <h1 className={classes.title}>
+                    {data.class_obj.name} • {data.class_obj.course.name}
+                  </h1>
                 </Link>
               </div>
             </GridItem>
@@ -107,58 +114,67 @@ export default function ClassWorkPage(props) {
               <div className={classes.infoSubmission}>
                 <h2>
                   {initialValues.title}
-                  <span className={classes.btnSubmission}>
-                    <CustomDropdown
-                      left
-                      hoverColor="info"
-                      btnIcon={<MoreVert />}
-                      caret={false}
-                      buttonProps={{
-                        className: classes.navLink,
-                        color: "transparent",
-                        size: "sm",
-                      }}
-                      dropdownList={[
-                        <span
-                          style={{ display: "block" }}
-                          key="edit-classwork"
-                          onClick={() => setClassicModal(true)}
-                        >
-                          Edit
-                        </span>,
-                        <span
-                          style={{ display: "block" }}
-                          key="delete-classwork"
-                          onClick={() =>
-                            setConfirmDialog({
-                              ...ConfirmDialog,
-                              isOpen: true,
-                              title: "Delete your classwork?",
-                              subTitle: "You can't undo this action.",
-                              attachment: [],
-                            })
-                          }
-                        >
-                          Delete
-                        </span>,
-                      ]}
-                    />
-                  </span>
+                  {role == "tutor" ? (
+                    <span className={classes.btnSubmission}>
+                      <CustomDropdown
+                        left
+                        hoverColor="info"
+                        btnIcon={<MoreVert />}
+                        caret={false}
+                        buttonProps={{
+                          className: classes.navLink,
+                          color: "transparent",
+                          size: "sm",
+                        }}
+                        dropdownList={[
+                          <span
+                            style={{ display: "block" }}
+                            key="edit-classwork"
+                            onClick={() => setClassicModal(true)}
+                          >
+                            Edit
+                          </span>,
+                          <span
+                            style={{ display: "block" }}
+                            key="delete-classwork"
+                            onClick={() =>
+                              setConfirmDialog({
+                                ...ConfirmDialog,
+                                isOpen: true,
+                                title: "Delete your classwork?",
+                                subTitle: "You can't undo this action.",
+                                attachment: [],
+                              })
+                            }
+                          >
+                            Delete
+                          </span>,
+                        ]}
+                      />
+                    </span>
+                  ) : null}
                 </h2>
-                <h5>Đây là tên giáo viên • Ngày giao.</h5>
-                <h6>
-                  Due date:{" "}
-                  <span className={classes.deadlineTimer}>
-                    {initialValues.dueDate}
-                  </span>
-                </h6>
+                <h5>
+                  {data.class_obj.tutor.first_name +
+                    " " +
+                    data.class_obj.tutor.last_name}{" "}
+                  • {new Date(data.created_date).toLocaleString("en-US")}.
+                </h5>
+                {initialValues.dueDate == null ? null : (
+                  <h6>
+                    Due date:{" "}
+                    <span className={classes.deadlineTimer}>
+                      {new Date(initialValues.dueDate).toLocaleString("en-US")}
+                    </span>
+                  </h6>
+                )}
                 <p>{initialValues.description}</p>
               </div>
               <GridContainer
                 justify={"center"}
                 className={classes.materialContainer}
               >
-                {materials.map((item) => (
+                {initialValues.file.map((item) => (
                   <GridItem
                     xs={12}
                     sm={12}
@@ -166,14 +182,14 @@ export default function ClassWorkPage(props) {
                     className={classes.materialItem}
                     key={item.id}
                   >
-                    <ClassMaterial name={item.name} type={item.type} />
+                    <ClassMaterial name={item.file} type={item.activity} />
                   </GridItem>
                 ))}
               </GridContainer>
             </GridItem>
             <GridItem xs={12} sm={12} md={3} className={classes.navWrapper}>
-              <ClassSubmission />
-              <ViewSubmission />
+              {role == "student" ? <ClassSubmission /> : null}
+              {role == "tutor" ? <ViewSubmission /> : null}
             </GridItem>
           </GridContainer>
         </div>
@@ -188,5 +204,5 @@ export default function ClassWorkPage(props) {
         myInitialValues={initialValues}
       />
     </div>
-  );
+  ) : null;
 }

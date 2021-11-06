@@ -21,6 +21,7 @@ specifiers:
   gulp: 4.0.2
   gulp-append-prepend: 1.0.9
   history: ^5.0.1
+  jwt-decode: ^3.1.2
   moment: 2.29.1
   node-sass: 6.0.0
   nouislider: 15.1.0
@@ -52,6 +53,7 @@ dependencies:
   date-fns: 2.25.0
   formik: 2.2.9_react@17.0.2
   history: 5.0.1
+  jwt-decode: 3.1.2
   moment: 2.29.1
   node-sass: 6.0.0
   nouislider: 15.1.0
@@ -8948,6 +8950,10 @@ packages:
   /just-debounce/1.1.0:
     resolution: {integrity: sha512-qpcRocdkUmf+UTNBYx5w6dexX5J31AKK1OmPwH630a83DdVVUIngk55RSAiIGpQyoH0dlr872VHfPjnQnK1qDQ==}
     dev: true
+
+  /jwt-decode/3.1.2:
+    resolution: {integrity: sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==}
+    dev: false
 
   /killable/1.0.1:
     resolution: {integrity: sha512-LzqtLKlUwirEUyl/nicirVmNiPvYs7l5n8wOPP7fyJVpUPkvCnW/vuiXGpylGUlnPDnB7311rARzAt3Mhswpjg==}

@@ -23,6 +23,7 @@ const homePageStyle = {
     zIndex: "3",
   },
   mainRaised: {
+    minHeight: "60vh",
     padding: "50px 30px 20px 30px",
     margin: "-60px 30px 0px",
     borderRadius: "6px",

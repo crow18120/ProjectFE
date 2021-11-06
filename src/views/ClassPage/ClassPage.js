@@ -6,8 +6,7 @@ import classNames from "classnames";
 import { makeStyles } from "@material-ui/core/styles";
 
 // react-router-dom
-import { Link } from "react-router-dom";
-
+import { Link, useParams } from "react-router-dom";
 // @material-ui/icons
 import { Group, Work, Dashboard } from "@material-ui/icons";
 
@@ -33,13 +32,20 @@ import AddClassWork from "./Sections/AddClassWork.js";
 
 import styles from "assets/jss/material-kit-react/views/classPage.js";
 
+import { getRole } from "services/userServices.js";
+import { getAllActivity } from "services/activityServices.js";
+import { usePromiseResult } from "use-promise-result";
+
 const useStyles = makeStyles(styles);
 
 export default function ClassPage(props) {
   const classes = useStyles();
+  const role = getRole();
   const { ...rest } = props;
-
-  return (
+  let { id } = useParams();
+  const { data, success } = usePromiseResult(() => getAllActivity(id));
+  console.log(data, success);
+  return success ? (
     <div>
       <Header
         color="transparent"
@@ -87,12 +93,22 @@ export default function ClassPage(props) {
                           <DeadlineWork />
                         </GridItem>
                         <GridItem xs={12} sm={12} md={9}>
-                          <AddClassActivity />
+                          {role == "tutor" ? <AddClassActivity /> : null}
                           <ClassActivity />
-                          <ClassWork />
-                          <ClassWork />
                           <ClassActivity />
-                          <ClassWork />
+                          {data.map((item) =>
+                            item.is_submit ? (
+                              <ClassWork
+                                key={item.id}
+                                id={item.id}
+                                created={item.created_date}
+                                deadline={item.deadline_date}
+                                description={item.description}
+                              />
+                            ) : (
+                              <ClassActivity key={item.id} />
+                            )
+                          )}
                         </GridItem>
                       </GridContainer>
                     ),
@@ -103,10 +119,18 @@ export default function ClassPage(props) {
                     tabContent: (
                       <GridContainer justify={"center"}>
                         <GridItem xs={12} sm={12} md={9}>
-                          <AddClassWork />
-                          <ClassWork />
-                          <ClassWork />
-                          <ClassWork />
+                          {role == "tutor" ? <AddClassWork /> : null}
+                          {data.map((item) =>
+                            item.is_submit ? (
+                              <ClassWork
+                                key={item.id}
+                                id={item.id}
+                                created={item.created_date}
+                                deadline={item.deadline_date}
+                                description={item.description}
+                              />
+                            ) : null
+                          )}
                         </GridItem>
                       </GridContainer>
                     ),
@@ -129,5 +153,5 @@ export default function ClassPage(props) {
         </div>
       </div>
     </div>
-  );
+  ) : null;
 }

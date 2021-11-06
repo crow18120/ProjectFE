@@ -251,8 +251,6 @@ export function ClassActivityFormDialog(props) {
     },
   });
 
-  console.log(myInitialValues);
-
   const myInitialFilesValue = myInitialValues.file.map(
     (ele) =>
       (ele = {

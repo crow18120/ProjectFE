@@ -1,4 +1,5 @@
 import axiosInstance from "./axios.js";
+import jwt_decode from "jwt-decode";
 
 export const loginService = async (data) => {
   let formData = new FormData();
@@ -30,4 +31,14 @@ export const logoutService = async () => {
   localStorage.removeItem("refresh_token");
   axiosInstance.defaults.headers["Authorization"] = null;
   return;
+};
+
+export const decodeJwtToken = () => {
+  return localStorage.getItem("access_token")
+    ? jwt_decode(localStorage.getItem("access_token"))
+    : null;
+};
+
+export const getRole = () => {
+  return decodeJwtToken() ? decodeJwtToken().role : null;
 };
