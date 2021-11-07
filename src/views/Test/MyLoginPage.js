@@ -26,7 +26,7 @@ import styles from "assets/jss/material-kit-react/views/loginPage.js";
 
 import image from "assets/img/bg7.jpg";
 
-import { loginService } from "services/userServices";
+import { loginService, getRole } from "services/userServices";
 
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -82,15 +82,19 @@ export default function LoginPage(props) {
     },
   });
 
-  const token = localStorage.getItem("access_token");
+  const role = getRole();
 
-  return token ? (
-    <Redirect
-      to={{
-        pathname: "/home-page",
-        state: { isLogin: true },
-      }}
-    />
+  return role != null ? (
+    role == "tutor" || role == "student" ? (
+      <Redirect
+        to={{
+          pathname: "/home-page",
+          state: { isLogin: true },
+        }}
+      />
+    ) : (
+      <Redirect to={{ pathname: "/" }} />
+    )
   ) : (
     <div>
       <Header

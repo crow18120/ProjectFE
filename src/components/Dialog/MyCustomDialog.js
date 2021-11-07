@@ -32,7 +32,8 @@ import { useFormik } from "formik";
 import styles from "assets/jss/material-kit-react/components/myCustomeDialog.js";
 import { v4 } from "uuid";
 
-import { addMaterialActivity } from "services/classServices";
+import { addClassActivity } from "services/classServices";
+import { editClassActivity } from "services/classServices";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -238,16 +239,56 @@ export function ProfileUserFormDialog(props) {
   );
 }
 
+///
 export function ClassActivityFormDialog(props) {
   const classes = useStyles();
-  const { classicModal, setClassicModal, myInitialValues } = props;
+  const {
+    classicModal,
+    setClassicModal,
+    myInitialValues,
+    classOrActivityID,
+    setNotify,
+    isEdit,
+  } = props;
   const formik = useFormik({
     initialValues: myInitialValues,
     validationSchema: yup.object({
       title: yup.string().required("Title is required"),
     }),
     onSubmit: async (values) => {
-      await addMaterialActivity(values);
+      if (!isEdit) {
+        const result = await addClassActivity(values, classOrActivityID);
+        if (result.status == 201) {
+          setClassicModal(false);
+          setNotify({
+            isOpen: true,
+            message: "Add class activity successfully.",
+            type: "success",
+          });
+        } else if (result.status != 201) {
+          setNotify({
+            isOpen: true,
+            message: "Something wrong...",
+            type: "error",
+          });
+        }
+      } else {
+        const result = await editClassActivity(values, classOrActivityID);
+        if (result.status == 201 || result.status == 200) {
+          setClassicModal(false);
+          setNotify({
+            isOpen: true,
+            message: "Edit class activity successfully.",
+            type: "success",
+          });
+        } else if (result.status != 201 && result.status != 200) {
+          setNotify({
+            isOpen: true,
+            message: "Something wrong...",
+            type: "error",
+          });
+        }
+      }
     },
   });
 
@@ -376,7 +417,7 @@ export function ClassActivityFormDialog(props) {
             {files.map((item) => (
               <GridItem xs={12} className={classes.materialItem} key={item.id}>
                 <SubmissionMaterial
-                  name={item.file.name}
+                  name={item.file.file_name || item.file.name}
                   id={item.id}
                   handleDeleteFile={handleDeleteFile}
                 />
@@ -411,6 +452,8 @@ export function ClassActivityFormDialog(props) {
     </Dialog>
   );
 }
+///
+
 
 export function ClassWorkFormDialog(props) {
   const classes = useStyles();

@@ -9,19 +9,28 @@ import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import GridContainer from "components/Grid/GridContainer";
 import GridItem from "components/Grid/GridItem";
+import Notification from "components/MyNotifications/Notification";
+
 import { ClassActivityFormDialog } from "components/Dialog/MyCustomDialog";
 
 import styles from "assets/jss/material-kit-react/views/classSections/classActivityStyle.js";
 
-import image from "assets/img/bg7.jpg";
+import { baseURL } from "services/axios";
 
 const useStyles = makeStyles(styles);
 
 const initialValues = { title: "", description: "", file: [] };
 
-export default function AddClassActivity() {
+export default function AddClassActivity(props) {
   const classes = useStyles();
   const [classicModal, setClassicModal] = React.useState(false);
+  const [notify, setNotify] = React.useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+
+  const { tutor, classID } = props;
 
   return (
     <>
@@ -35,7 +44,7 @@ export default function AddClassActivity() {
           <GridContainer className={classes.cardHeaderContainer}>
             <GridItem xs={12} sm={12} md={2} className={classes.avatar}>
               <img
-                src={image}
+                src={baseURL + tutor.profile_image}
                 alt="..."
                 className={classes.imgRoundedCircle + " " + classes.imgFluid}
               />
@@ -52,7 +61,11 @@ export default function AddClassActivity() {
         classicModal={classicModal}
         setClassicModal={setClassicModal}
         myInitialValues={initialValues}
+        classID={classID}
+        setNotify={setNotify}
+        isEdit={false}
       />
+      <Notification notify={notify} setNotify={setNotify} />
     </>
   );
 }

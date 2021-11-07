@@ -13,40 +13,21 @@ import GridContainer from "components/Grid/GridContainer";
 import GridItem from "components/Grid/GridItem";
 import CustomDropdown from "components/CustomDropdown/CustomDropdown.js";
 import ConfirmDialog from "components/Dialog/MyConfirmDialog";
+import Notification from "components/MyNotifications/Notification";
+
 import { ClassActivityFormDialog } from "components/Dialog/MyCustomDialog.js";
 
 import ClassMaterial from "./ClassMaterial.js";
 
 import styles from "assets/jss/material-kit-react/views/classSections/classActivityStyle.js";
 
-import image from "assets/img/bg7.jpg";
+import { baseURL } from "services/axios.js";
+import { getRole } from "services/userServices.js";
+import { deleteClassActivity } from "services/classServices.js";
 
 const useStyles = makeStyles(styles);
 
-const initialValues = {
-  title: "Đây là Tên của activity.",
-  description:
-    "Đây là Thông báo nội dung của activity. Đây là Thông báo nội dung của activity. Đây là Thông báo nội dung của activity. Đây là Thông báo nội dung của activity.",
-  file: [
-    {
-      id: "1",
-      name: "Đây là tên file. Đây là tên file. Đây là tên file.",
-      type: "Đây là dạng file.",
-    },
-    {
-      id: "2",
-      name: "Đây là tên file. Đây là tên file. Đây là tên file.",
-      type: "Đây là dạng file.",
-    },
-    {
-      id: "3",
-      name: "Đây là tên file. Đây là tên file. Đây là tên file.",
-      type: "Đây là dạng file.",
-    },
-  ],
-};
-
-export default function ClassActivity() {
+export default function ClassActivity(props) {
   const classes = useStyles();
   const [classicModal, setClassicModal] = React.useState(false);
   const [confirmDialog, setConfirmDialog] = React.useState({
@@ -55,6 +36,21 @@ export default function ClassActivity() {
     subTitle: "",
     attachment: [],
   });
+  const [notify, setNotify] = React.useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+
+  const role = getRole();
+
+  const { tutor, description, title, created, file, activity_id } = props;
+
+  const initialValues = {
+    title: title,
+    description: description == null ? "" : description,
+    file: file,
+  };
 
   return (
     <Card className={classes.card}>
@@ -62,57 +58,83 @@ export default function ClassActivity() {
         <GridContainer className={classes.cardHeaderContainer}>
           <GridItem xs={2} className={classes.avatar}>
             <img
-              src={image}
+              src={baseURL + tutor.profile_image}
               alt="..."
               className={classes.imgRoundedCircle + " " + classes.imgFluid}
             />
           </GridItem>
           <GridItem xs={10}>
-            <p className={classes.name}>Đây là tên Activity.</p>
-            <p className={classes.timer}>Đây là thời gian.</p>
+            <p className={classes.name}>
+              {tutor.first_name} {tutor.last_name}
+            </p>
+            <p className={classes.timer}>
+              {new Date(created).toLocaleString("en-US")}
+            </p>
           </GridItem>
-          <span className={classes.btnEditOrDelete}>
-            <CustomDropdown
-              left
-              hoverColor="info"
-              btnIcon={<MoreVert />}
-              caret={false}
-              buttonProps={{
-                className: classes.navLink,
-                color: "transparent",
-                size: "sm",
-              }}
-              dropdownList={[
-                <span
-                  style={{ display: "block" }}
-                  key="edit-classwork"
-                  onClick={() => setClassicModal(true)}
-                >
-                  Edit
-                </span>,
-                <span
-                  style={{ display: "block" }}
-                  key="delete-classwork"
-                  onClick={() =>
-                    setConfirmDialog({
-                      ...ConfirmDialog,
-                      isOpen: true,
-                      title: "Delete your class activity?",
-                      subTitle:
-                        "You can't undo this action. " +
-                        `"` +
-                        initialValues.title +
-                        `"` +
-                        " activity will be delete.",
-                      attachment: [],
-                    })
-                  }
-                >
-                  Delete
-                </span>,
-              ]}
-            />
-          </span>
+          {role == "tutor" ? (
+            <span className={classes.btnEditOrDelete}>
+              <CustomDropdown
+                left
+                hoverColor="info"
+                btnIcon={<MoreVert />}
+                caret={false}
+                buttonProps={{
+                  className: classes.navLink,
+                  color: "transparent",
+                  size: "sm",
+                }}
+                dropdownList={[
+                  <span
+                    style={{ display: "block" }}
+                    key="edit-classwork"
+                    onClick={() => setClassicModal(true)}
+                  >
+                    Edit
+                  </span>,
+                  <span
+                    style={{ display: "block" }}
+                    key="delete-classwork"
+                    onClick={() =>
+                      setConfirmDialog({
+                        ...ConfirmDialog,
+                        isOpen: true,
+                        title: "Delete your class activity?",
+                        subTitle:
+                          "You can't undo this action. " +
+                          `"` +
+                          initialValues.title +
+                          `"` +
+                          " activity will be delete.",
+                        attachment: [],
+                        onConfirm: async () => {
+                          const result = await deleteClassActivity(activity_id);
+                          if (result.status == 204) {
+                            setConfirmDialog({
+                              ...confirmDialog,
+                              isOpen: false,
+                            });
+                            setNotify({
+                              isOpen: true,
+                              message: "Delete class activity successfully.",
+                              type: "success",
+                            });
+                          } else if (result.status != 204) {
+                            setNotify({
+                              isOpen: true,
+                              message: "Something error...",
+                              type: "error",
+                            });
+                          }
+                        },
+                      })
+                    }
+                  >
+                    Delete
+                  </span>,
+                ]}
+              />
+            </span>
+          ) : null}
         </GridContainer>
       </CardHeader>
       <CardBody className={classes.cardBody}>
@@ -129,7 +151,7 @@ export default function ClassActivity() {
               className={classes.materialItem}
               key={item.id}
             >
-              <ClassMaterial name={item.name} type={item.type} />
+              <ClassMaterial name={item.file_name} type={item.file_type} />
             </GridItem>
           ))}
         </GridContainer>
@@ -142,7 +164,11 @@ export default function ClassActivity() {
         classicModal={classicModal}
         setClassicModal={setClassicModal}
         myInitialValues={initialValues}
+        classOrActivityID={activity_id}
+        setNotify={setNotify}
+        isEdit={true}
       />
+      <Notification notify={notify} setNotify={setNotify} />
     </Card>
   );
 }

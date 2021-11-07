@@ -40,11 +40,15 @@ const useStyles = makeStyles(styles);
 
 export default function ClassPage(props) {
   const classes = useStyles();
+
   const role = getRole();
+
   const { ...rest } = props;
+
   let { id } = useParams();
+
   const { data, success } = usePromiseResult(() => getAllActivity(id));
-  console.log(data, success);
+
   return success ? (
     <div>
       <Header
@@ -68,8 +72,10 @@ export default function ClassPage(props) {
           <GridContainer>
             <GridItem>
               <div className={classes.brand}>
-                <Link to="/class-page">
-                  <h1 className={classes.title}>Course Management System</h1>
+                <Link to={`/class-page/${id}`}>
+                  <h1 className={classes.title}>
+                    {data["class"].name} • {data["class"].course_detail.name}
+                  </h1>
                 </Link>
               </div>
             </GridItem>
@@ -93,10 +99,13 @@ export default function ClassPage(props) {
                           <DeadlineWork />
                         </GridItem>
                         <GridItem xs={12} sm={12} md={9}>
-                          {role == "tutor" ? <AddClassActivity /> : null}
-                          <ClassActivity />
-                          <ClassActivity />
-                          {data.map((item) =>
+                          {role == "tutor" ? (
+                            <AddClassActivity
+                              tutor={data["class"].tutor_detail}
+                              classID={id}
+                            />
+                          ) : null}
+                          {data["activities"].map((item) =>
                             item.is_submit ? (
                               <ClassWork
                                 key={item.id}
@@ -106,7 +115,15 @@ export default function ClassPage(props) {
                                 description={item.description}
                               />
                             ) : (
-                              <ClassActivity key={item.id} />
+                              <ClassActivity
+                                key={item.id}
+                                activity_id={item.id}
+                                tutor={data["class"].tutor_detail}
+                                created={item.created_date}
+                                description={item.description}
+                                title={item.name}
+                                file={item.materials}
+                              />
                             )
                           )}
                         </GridItem>
@@ -120,7 +137,7 @@ export default function ClassPage(props) {
                       <GridContainer justify={"center"}>
                         <GridItem xs={12} sm={12} md={9}>
                           {role == "tutor" ? <AddClassWork /> : null}
-                          {data.map((item) =>
+                          {data["activities"].map((item) =>
                             item.is_submit ? (
                               <ClassWork
                                 key={item.id}

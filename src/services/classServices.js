@@ -67,14 +67,100 @@ export const getAllClass = async () => {
         .get("classes/class-tutor/" + payload.account_id + "/")
         .then((response) => response.data);
     case "staff":
-      return "abc";
+      return [];
+    case "admin":
+      return [];
     case null:
       return MockDataClassList;
   }
-  return await axiosInstance
-    .get("classes/class-student/" + payload.account_id + "/")
-    .then((response) => response.data)
-    .then((data) => data.map((ele) => ele.class_obj));
+  console.log(role);
+};
+
+export const addClassActivity = async (values, classID) => {
+  let formData = new FormData();
+  values = {
+    ...values,
+    name: values["title"],
+    class_obj: classID,
+  };
+  for (const key in values) {
+    if (key == "file") continue;
+    if (Object.hasOwnProperty.call(values, key)) {
+      const value = values[key];
+      formData.append(key, value);
+    }
+  }
+
+  const activity = await axiosInstance.post("activities/activity/", formData, {
+    headers: {
+      "Content-Type": `multipart/form-data boundary=${formData._boundary}`,
+    },
+    body: { formData },
+  });
+
+  if (values["file"].length != 0) {
+    formData.append("activity", activity.data["id"]);
+    for (const file in values["file"]) {
+      formData.append("file", values["file"][file]);
+    }
+
+    return await axiosInstance.post("activities/ac-material/", formData, {
+      headers: {
+        "Content-Type": `multipart/form-data boundary=${formData._boundary}`,
+      },
+      body: { formData },
+    });
+  } else return activity;
+};
+
+export const editClassActivity = async (values, activityID) => {
+  let formData = new FormData();
+  values = {
+    ...values,
+    name: values["title"],
+  };
+  for (const key in values) {
+    if (key == "file") continue;
+    if (Object.hasOwnProperty.call(values, key)) {
+      const value = values[key];
+      formData.append(key, value);
+    }
+  }
+
+  const activity = await axiosInstance.put(
+    `activities/activity/${activityID}/`,
+    formData,
+    {
+      headers: {
+        "Content-Type": `multipart/form-data boundary=${formData._boundary}`,
+      },
+      body: { formData },
+    }
+  );
+  const materials = activity.data.materials;
+  if (materials.length != 0) {
+    materials.map(
+      async (ele) =>
+        await axiosInstance.delete(`activities/ac-material/${ele.id}/`)
+    );
+  }
+  if (values["file"].length != 0) {
+    formData.append("activity", activityID);
+    for (const file in values["file"]) {
+      formData.append("file", values["file"][file]);
+    }
+
+    return await axiosInstance.post("activities/ac-material/", formData, {
+      headers: {
+        "Content-Type": `multipart/form-data boundary=${formData._boundary}`,
+      },
+      body: { formData },
+    });
+  } else return await axiosInstance.get(`activities/activity/${activityID}/`);
+};
+
+export const deleteClassActivity = async (activityID) => {
+  return await axiosInstance.delete(`activities/activity/${activityID}/`);
 };
 
 export const addMaterialActivity = async (data) => {
@@ -109,40 +195,3 @@ export const getFile = async (id) => {
     .get("http://127.0.0.1:8000/activities/ac-material/" + id + "/", {})
     .then((res) => res);
 };
-
-// export const getStudent = async (id) => {
-//   return await axios
-//     .get(getStudentsEndPointTest, {
-//       params: {
-//         id,
-//       },
-//     })
-//     .then((res) => res);
-//   // .then((data) => {
-//   //   return {
-//   //     ...data,
-//   //     img: getAvatarUrlFromFileName(data.img),
-//   //     birthday: moment(data.birthday).format("YYYY-MM-DD"),
-//   //     gender: String(data.gender),
-//   //     dayAdmission: moment(data.dayAdmission).format("YYYY-MM-DD"),
-//   //   };
-//   // });
-// };
-
-// export const modifyStudentAction = async (initVal) => {
-//   let fd = new FormData();
-
-//   initVal = {
-//     ...initVal,
-//     gender: +initVal.gender,
-//   };
-//   for (let key in initVal) {
-//     const value = initVal[key];
-//     fd.append(key, value);
-//   }
-//   return await axios.post(modifyStudentEndPoint, fd, {
-//     headers: {
-//       "Content-Type": false,
-//     },
-//   });
-// };

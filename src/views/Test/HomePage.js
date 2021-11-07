@@ -103,7 +103,7 @@ export default function ProfilePage(props) {
                     />
                   </CardHeader>
                   <CardBody className={classes.cardBody}>
-                    <h4>{item.course.name}</h4>
+                    <h4>{item.course_detail.name}</h4>
                     <h6>{item.name}</h6>
                   </CardBody>
                   <CardFooter className={classes.cardFooter}>
@@ -111,17 +111,7 @@ export default function ProfilePage(props) {
                       {getRole() == null ? (
                         <Link to={"/login-page"}>View</Link>
                       ) : (
-                        <Link
-                          to={{
-                            pathname: `/class-page/${item.id}`,
-                            state: {
-                              course: item.course.name,
-                              class: item.name,
-                            },
-                          }}
-                        >
-                          View
-                        </Link>
+                        <Link to={`/class-page/${item.id}`}>View</Link>
                       )}
                     </Button>
                   </CardFooter>
