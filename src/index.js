@@ -18,6 +18,7 @@ import ClassWorkPage from "views/ClassWorkPage/ClassWorkPage";
 import SubmissionPage from "views/SubmissionPage/SubmissionPage";
 import ViewSubmissionPage from "views/ViewSubmissionPage/ViewSubmissionPage";
 import ViewSubFile from "views/ViewSubmissionPage/Sections/ViewSubFile";
+import ViewPDF from "views/ViewDPF/ViewDPF";
 var hist = createBrowserHistory();
 
 ReactDOM.render(
@@ -33,6 +34,7 @@ ReactDOM.render(
       <Route path="/submission-page" component={SubmissionPage} />
       <Route path="/view-sub-page" component={ViewSubmissionPage} />
       <Route path="/view-sub-file" component={ViewSubFile} />
+      <Route path="/view-pdf" component={ViewPDF} />
       <Route path="/" component={Components} />
     </Switch>
   </Router>,

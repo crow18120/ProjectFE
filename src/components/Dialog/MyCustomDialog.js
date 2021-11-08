@@ -34,6 +34,8 @@ import { v4 } from "uuid";
 
 import { addClassActivity } from "services/classServices";
 import { editClassActivity } from "services/classServices";
+import { addClassWork } from "services/classServices";
+import { editClassWork } from "services/classServices";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -250,6 +252,7 @@ export function ClassActivityFormDialog(props) {
     setNotify,
     isEdit,
   } = props;
+
   const formik = useFormik({
     initialValues: myInitialValues,
     validationSchema: yup.object({
@@ -408,7 +411,7 @@ export function ClassActivityFormDialog(props) {
             <Input
               type="file"
               inputRef={hiddenFileInput}
-              inputProps={{ multiple: true }}
+              inputProps={{ multiple: true, accept: "application/pdf" }}
               onChange={(e) => {
                 handleAddFile(e);
               }}
@@ -454,10 +457,16 @@ export function ClassActivityFormDialog(props) {
 }
 ///
 
-
 export function ClassWorkFormDialog(props) {
   const classes = useStyles();
-  const { classicModal, setClassicModal, myInitialValues } = props;
+  const {
+    classicModal,
+    setClassicModal,
+    myInitialValues,
+    classOrActivityID,
+    setNotify,
+    isEdit,
+  } = props;
 
   const formik = useFormik({
     initialValues: myInitialValues,
@@ -478,20 +487,53 @@ export function ClassWorkFormDialog(props) {
           .min(new Date(), "Due date is in the past."),
       }),
     }),
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      if (!isEdit) {
+        const result = await addClassWork(values, classOrActivityID);
+        if (result.status == 201) {
+          setClassicModal(false);
+          setNotify({
+            isOpen: true,
+            message: "Add classwork successfully.",
+            type: "success",
+          });
+        } else if (result.status != 201) {
+          setNotify({
+            isOpen: true,
+            message: "Something wrong...",
+            type: "error",
+          });
+        }
+      } else {
+        const result = await editClassWork(values, classOrActivityID);
+        if (result.status == 201 || result.status == 200) {
+          setClassicModal(false);
+          setNotify({
+            isOpen: true,
+            message: "Edit classwork successfully.",
+            type: "success",
+          });
+        } else if (result.status != 201 && result.status != 200) {
+          setNotify({
+            isOpen: true,
+            message: "Something wrong...",
+            type: "error",
+          });
+        }
+      }
     },
   });
 
-  const myInitialFilesValue = myInitialValues.file.map(
-    (ele) =>
-      (ele = {
-        file: ele,
-        id: v4(),
-      })
+  const [files, setFiles] = React.useState(
+    myInitialValues.file.map(
+      (ele) =>
+        (ele = {
+          file: ele,
+          id: v4(),
+        })
+    )
   );
-
-  const [files, setFiles] = React.useState(myInitialFilesValue);
   const hiddenFileInput = React.useRef(null);
 
   const handleClick = () => {
@@ -512,13 +554,34 @@ export function ClassWorkFormDialog(props) {
 
   const handleReset = () => {
     formik.handleReset();
-    setFiles(myInitialFilesValue);
+    setFiles(
+      myInitialValues.file.map(
+        (ele) =>
+          (ele = {
+            file: ele,
+            id: v4(),
+          })
+      )
+    );
   };
 
   React.useEffect(() => {
     formik.setFieldValue("file", getFilesFromMyCustomList(files), false);
     return null;
   }, [files]);
+
+  React.useEffect(() => {
+    setFiles(
+      myInitialValues.file.map(
+        (ele) =>
+          (ele = {
+            file: ele,
+            id: v4(),
+          })
+      )
+    );
+    return null;
+  }, [myInitialValues]);
 
   return (
     <Dialog
@@ -548,7 +611,7 @@ export function ClassWorkFormDialog(props) {
           >
             <Close className={classes.modalClose} />
           </IconButton>
-          <h4 className={classes.modalTitle}>Class Activity</h4>
+          <h4 className={classes.modalTitle}>Class Work</h4>
         </DialogTitle>
         <DialogContent
           id="classic-modal-slide-description"
@@ -649,7 +712,7 @@ export function ClassWorkFormDialog(props) {
             {files.map((item) => (
               <GridItem xs={12} className={classes.materialItem} key={item.id}>
                 <SubmissionMaterial
-                  name={item.file.name}
+                  name={item.file.name || item.file.file_name}
                   id={item.id}
                   handleDeleteFile={handleDeleteFile}
                 />

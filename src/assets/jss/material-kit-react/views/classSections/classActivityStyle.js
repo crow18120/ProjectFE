@@ -145,6 +145,12 @@ const classActivityStyle = {
   cardBodyDeadline: {
     padding: "0.25rem 1rem 0.25rem 1rem",
     borderBottom: "0.0625rem solid #dadce0",
+    height: "135px",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    "& p": {
+      lineHeight: "25px",
+    },
   },
   cardFooterDeadline: {
     padding: "0.25rem 1rem 0.25rem 1rem",
@@ -194,6 +200,10 @@ const classActivityStyle = {
   },
   groupTeachers: {
     marginBottom: "50px",
+  },
+  abc: {
+    width: "100%",
+    maxWidth: "100%",
   },
 };
 

@@ -136,7 +136,9 @@ export default function ClassPage(props) {
                     tabContent: (
                       <GridContainer justify={"center"}>
                         <GridItem xs={12} sm={12} md={9}>
-                          {role == "tutor" ? <AddClassWork /> : null}
+                          {role == "tutor" ? (
+                            <AddClassWork classID={id} />
+                          ) : null}
                           {data["activities"].map((item) =>
                             item.is_submit ? (
                               <ClassWork

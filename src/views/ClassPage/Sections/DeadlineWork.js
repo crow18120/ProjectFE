@@ -28,22 +28,22 @@ export default function DeadlineWork() {
       >
         <GridContainer className={classes.cardHeaderContainer}>
           <GridItem xs={12} sm={12} md={10}>
-            <p className={classes.name}>Upcoming</p>
+            <p className={classes.name}>Course</p>
           </GridItem>
         </GridContainer>
       </CardHeader>
       <CardBody className={classes.cardBody + " " + classes.cardBodyDeadline}>
         <p>
-          Đây là Thông báo nội dung của activity. Đây là Thông báo nội dung của
-          activity. Đây là Thông báo nội dung của activity. Đây là Thông báo nội
-          dung của activity.{" "}
+          This is description of Course. This is description of Course. This is
+          description of Course. This is description of Course. This is
+          description of Course. This is description of Course.
         </p>
       </CardBody>
       <CardFooter
         className={classes.cardFooter + " " + classes.cardFooterDeadline}
       >
         <Button simple color="primary" size="sm">
-          <Link to="/class-page">View</Link>
+          <Link to="/class-page">View Detail</Link>
         </Button>
       </CardFooter>
     </Card>

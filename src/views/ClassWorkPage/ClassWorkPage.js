@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // @material-ui/core components
@@ -26,6 +26,7 @@ import { ClassWorkFormDialog } from "components/Dialog/MyCustomDialog";
 import ClassMaterial from "./Sections/ClassMaterial";
 import ClassSubmission from "./Sections/ClassSubmission";
 import ViewSubmission from "./Sections/ViewSubmission";
+import Notification from "components/MyNotifications/Notification";
 
 import styles from "assets/jss/material-kit-react/views/classWorkPage.js";
 
@@ -57,21 +58,27 @@ export default function ClassWorkPage(props) {
     description: "",
     file: [],
     dueDate: null,
+    isAssignment: false,
   });
 
-  useEffect(() => {
+  const [notify, setNotify] = React.useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+
+  React.useEffect(() => {
     success
       ? setInitialValues({
+          ...initialValues,
           title: data.name,
           description: data.description,
           file: data.materials,
           dueDate: data.deadline_date,
+          isAssignment: data.is_assignment,
         })
       : null;
   }, [success]);
-
-  console.log(data);
-
   const { ...rest } = props;
 
   return success ? (
@@ -97,9 +104,10 @@ export default function ClassWorkPage(props) {
           <GridContainer>
             <GridItem>
               <div className={classes.brand}>
-                <Link to={`/class-page/${data.class_obj.id}`}>
+                <Link to={`/class-page/${data.class_obj}`}>
                   <h1 className={classes.title}>
-                    {data.class_obj.name} • {data.class_obj.course.name}
+                    {data.class_detail.name} •{" "}
+                    {data.class_detail.course_detail.name}
                   </h1>
                 </Link>
               </div>
@@ -155,19 +163,25 @@ export default function ClassWorkPage(props) {
                   ) : null}
                 </h2>
                 <h5>
-                  {data.class_obj.tutor.first_name +
+                  {data.class_detail.tutor_detail.first_name +
                     " " +
-                    data.class_obj.tutor.last_name}{" "}
+                    data.class_detail.tutor_detail.last_name}{" "}
                   • {new Date(data.created_date).toLocaleString("en-US")}.
                 </h5>
-                {initialValues.dueDate == null ? null : (
-                  <h6>
-                    Due date:{" "}
+                <h6>
+                  Due date:{" "}
+                  {initialValues.dueDate == null ? (
+                    <span>No due date</span>
+                  ) : new Date(initialValues.dueDate) < new Date() ? (
                     <span className={classes.deadlineTimer}>
                       {new Date(initialValues.dueDate).toLocaleString("en-US")}
                     </span>
-                  </h6>
-                )}
+                  ) : (
+                    <span className={classes.deadlineTimerGreen}>
+                      {new Date(initialValues.dueDate).toLocaleString("en-US")}
+                    </span>
+                  )}
+                </h6>
                 <p>{initialValues.description}</p>
               </div>
               <GridContainer
@@ -182,7 +196,11 @@ export default function ClassWorkPage(props) {
                     className={classes.materialItem}
                     key={item.id}
                   >
-                    <ClassMaterial name={item.file} type={item.activity} />
+                    <ClassMaterial
+                      name={item.file_name}
+                      type={item.file_type}
+                      linkMaterial={item.file}
+                    />
                   </GridItem>
                 ))}
               </GridContainer>
@@ -202,7 +220,11 @@ export default function ClassWorkPage(props) {
         classicModal={classicModal}
         setClassicModal={setClassicModal}
         myInitialValues={initialValues}
+        classOrActivityID={id}
+        setNotify={setNotify}
+        isEdit={true}
       />
+      <Notification notify={notify} setNotify={setNotify} />
     </div>
   ) : null;
 }

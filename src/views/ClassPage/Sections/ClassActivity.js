@@ -52,8 +52,10 @@ export default function ClassActivity(props) {
     file: file,
   };
 
+  const [isNone, setIsNone] = React.useState(false);
+
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} style={{ display: isNone ? "none" : null }}>
       <CardHeader color="primary" className={classes.cardHeader}>
         <GridContainer className={classes.cardHeaderContainer}>
           <GridItem xs={2} className={classes.avatar}>
@@ -118,6 +120,7 @@ export default function ClassActivity(props) {
                               message: "Delete class activity successfully.",
                               type: "success",
                             });
+                            setIsNone(true);
                           } else if (result.status != 204) {
                             setNotify({
                               isOpen: true,
@@ -151,7 +154,11 @@ export default function ClassActivity(props) {
               className={classes.materialItem}
               key={item.id}
             >
-              <ClassMaterial name={item.file_name} type={item.file_type} />
+              <ClassMaterial
+                name={item.file_name}
+                type={item.file_type}
+                linkMaterial={item.file}
+              />
             </GridItem>
           ))}
         </GridContainer>

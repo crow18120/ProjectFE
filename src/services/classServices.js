@@ -1,4 +1,5 @@
 import axios from "axios";
+import moment from "moment";
 import axiosInstance from "./axios.js";
 import { decodeJwtToken, getRole } from "./userServices.js";
 
@@ -137,17 +138,19 @@ export const editClassActivity = async (values, activityID) => {
       body: { formData },
     }
   );
-  const materials = activity.data.materials;
-  if (materials.length != 0) {
-    materials.map(
-      async (ele) =>
-        await axiosInstance.delete(`activities/ac-material/${ele.id}/`)
-    );
-  }
-  if (values["file"].length != 0) {
+  const materials = activity.data.materials.map((ele) => ele.id);
+  const push_materials = values["file"].map((ele) => ele.id);
+  const pop_materials = materials.filter(
+    (ele) => !push_materials.includes(ele)
+  );
+  const new_materials = values["file"].filter((ele) => ele.id == undefined);
+  pop_materials.map(
+    async (ele) => await axiosInstance.delete(`activities/ac-material/${ele}/`)
+  );
+  if (new_materials.length != 0) {
     formData.append("activity", activityID);
-    for (const file in values["file"]) {
-      formData.append("file", values["file"][file]);
+    for (const file in new_materials) {
+      formData.append("file", new_materials[file]);
     }
 
     return await axiosInstance.post("activities/ac-material/", formData, {
@@ -161,6 +164,100 @@ export const editClassActivity = async (values, activityID) => {
 
 export const deleteClassActivity = async (activityID) => {
   return await axiosInstance.delete(`activities/activity/${activityID}/`);
+};
+
+export const addClassWork = async (values, classID) => {
+  let formData = new FormData();
+  values = {
+    ...values,
+    name: values["title"],
+    class_obj: classID,
+    is_submit: true,
+    is_assignment: values["isAssignment"],
+    deadline_date:
+      values["dueDate"] == null ? "" : moment(values["dueDate"]).utc().format(),
+  };
+  for (const key in values) {
+    if (key == "file") continue;
+    if (Object.hasOwnProperty.call(values, key)) {
+      const value = values[key];
+      formData.append(key, value);
+    }
+  }
+
+  const activity = await axiosInstance.post("activities/activity/", formData, {
+    headers: {
+      "Content-Type": `multipart/form-data boundary=${formData._boundary}`,
+    },
+    body: { formData },
+  });
+
+  if (values["file"].length != 0) {
+    formData.append("activity", activity.data["id"]);
+    for (const file in values["file"]) {
+      formData.append("file", values["file"][file]);
+    }
+
+    return await axiosInstance.post("activities/ac-material/", formData, {
+      headers: {
+        "Content-Type": `multipart/form-data boundary=${formData._boundary}`,
+      },
+      body: { formData },
+    });
+  } else return activity;
+};
+
+export const editClassWork = async (values, activityID) => {
+  let formData = new FormData();
+  values = {
+    ...values,
+    name: values["title"],
+    is_submit: true,
+    is_assignment: values["isAssignment"],
+    deadline_date:
+      values["dueDate"] == null ? "" : moment(values["dueDate"]).utc().format(),
+  };
+  console.log(values);
+  for (const key in values) {
+    if (key == "file") continue;
+    if (Object.hasOwnProperty.call(values, key)) {
+      const value = values[key];
+      formData.append(key, value);
+    }
+  }
+
+  const activity = await axiosInstance.put(
+    `activities/activity/${activityID}/`,
+    formData,
+    {
+      headers: {
+        "Content-Type": `multipart/form-data boundary=${formData._boundary}`,
+      },
+      body: { formData },
+    }
+  );
+  const materials = activity.data.materials.map((ele) => ele.id);
+  const push_materials = values["file"].map((ele) => ele.id);
+  const pop_materials = materials.filter(
+    (ele) => !push_materials.includes(ele)
+  );
+  const new_materials = values["file"].filter((ele) => ele.id == undefined);
+  pop_materials.map(
+    async (ele) => await axiosInstance.delete(`activities/ac-material/${ele}/`)
+  );
+  if (new_materials.length != 0) {
+    formData.append("activity", activityID);
+    for (const file in new_materials) {
+      formData.append("file", new_materials[file]);
+    }
+
+    return await axiosInstance.post("activities/ac-material/", formData, {
+      headers: {
+        "Content-Type": `multipart/form-data boundary=${formData._boundary}`,
+      },
+      body: { formData },
+    });
+  } else return await axiosInstance.get(`activities/activity/${activityID}/`);
 };
 
 export const addMaterialActivity = async (data) => {

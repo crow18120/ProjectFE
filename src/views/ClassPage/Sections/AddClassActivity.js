@@ -42,14 +42,14 @@ export default function AddClassActivity(props) {
       >
         <CardHeader color="primary" className={classes.cardHeader}>
           <GridContainer className={classes.cardHeaderContainer}>
-            <GridItem xs={12} sm={12} md={2} className={classes.avatar}>
+            <GridItem xs={2} sm={2} md={2} className={classes.avatar}>
               <img
                 src={baseURL + tutor.profile_image}
                 alt="..."
                 className={classes.imgRoundedCircle + " " + classes.imgFluid}
               />
             </GridItem>
-            <GridItem xs={12} sm={12} md={10}>
+            <GridItem xs={10} sm={10} md={10}>
               <p className={classes.name}>
                 Post a new activity for your class.
               </p>
@@ -61,7 +61,7 @@ export default function AddClassActivity(props) {
         classicModal={classicModal}
         setClassicModal={setClassicModal}
         myInitialValues={initialValues}
-        classID={classID}
+        classOrActivityID={classID}
         setNotify={setNotify}
         isEdit={false}
       />

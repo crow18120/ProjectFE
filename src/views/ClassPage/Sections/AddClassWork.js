@@ -9,6 +9,8 @@ import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import GridContainer from "components/Grid/GridContainer";
 import GridItem from "components/Grid/GridItem";
+import Notification from "components/MyNotifications/Notification";
+
 import { ClassWorkFormDialog } from "components/Dialog/MyCustomDialog";
 
 import styles from "assets/jss/material-kit-react/views/classSections/classActivityStyle.js";
@@ -23,9 +25,16 @@ const initialValues = {
   isAssignment: false,
 };
 
-export default function AddClassWork() {
+export default function AddClassWork(props) {
   const classes = useStyles();
   const [classicModal, setClassicModal] = React.useState(false);
+  const [notify, setNotify] = React.useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+
+  const { classID } = props;
 
   return (
     <>
@@ -49,7 +58,11 @@ export default function AddClassWork() {
         classicModal={classicModal}
         setClassicModal={setClassicModal}
         myInitialValues={initialValues}
+        classOrActivityID={classID}
+        setNotify={setNotify}
+        isEdit={false}
       />
+      <Notification notify={notify} setNotify={setNotify} />
     </>
   );
 }

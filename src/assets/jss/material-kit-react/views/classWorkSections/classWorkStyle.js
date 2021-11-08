@@ -124,6 +124,10 @@ const submissionStyle = {
       margin: "0",
     },
   },
+  abc: {
+    width: "100%",
+    maxWidth: "100%",
+  },
 };
 
 export default submissionStyle;

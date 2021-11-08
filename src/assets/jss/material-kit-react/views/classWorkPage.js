@@ -65,6 +65,9 @@ const submissionPageStyle = {
   deadlineTimer: {
     color: "red",
   },
+  deadlineTimerGreen: {
+    color: "green",
+  },
   materialContainer: {
     justifyContent: "space-between",
     paddingLeft: "1rem",
