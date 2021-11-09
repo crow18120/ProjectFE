@@ -3,9 +3,9 @@ import React from "react";
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
+import { Box, CircularProgress } from "@material-ui/core";
 // react-router-dom
-import { Link } from "react-router-dom";
-
+import { useParams } from "react-router-dom";
 // @material-ui/icons
 
 // core components
@@ -21,46 +21,24 @@ import {
 import Parallax from "components/Parallax/Parallax.js";
 
 import styles from "assets/jss/material-kit-react/views/submissionPage.js";
+
 import SubmissionStatus from "./Sections/SubmissionStatus";
 import SubmissionList from "./Sections/SubmissionList";
 
-const useStyles = makeStyles(styles);
+import { usePromiseResult } from "use-promise-result";
+import { getAllSubmissionWithActivity } from "services/activityServices";
+import SubmissionLink from "./Sections/SubmissionLink";
 
-const submissionList = [
-  {
-    id: "1",
-    isSubmitted: true,
-    isMarked: false,
-    file: "4",
-  },
-  {
-    id: "2",
-    isSubmitted: false,
-    isMarked: false,
-    file: "0",
-  },
-  {
-    id: "3",
-    isSubmitted: true,
-    isMarked: true,
-    file: "2",
-  },
-  {
-    id: "4",
-    isSubmitted: true,
-    isMarked: false,
-    file: "3",
-  },
-  {
-    id: "5",
-    isSubmitted: true,
-    isMarked: false,
-    file: "1",
-  },
-];
+const useStyles = makeStyles(styles);
 
 export default function SubmissionPage(props) {
   const classes = useStyles();
+
+  const { id } = useParams();
+
+  const { data, success } = usePromiseResult(() =>
+    getAllSubmissionWithActivity(id)
+  );
 
   const { ...rest } = props;
 
@@ -84,23 +62,31 @@ export default function SubmissionPage(props) {
         className={classes.classParallax}
       >
         <div className={classes.container}>
-          <GridContainer>
-            <GridItem>
-              <div className={classes.brand}>
-                <Link to="/class-page">
-                  <h1 className={classes.title}>Course Management System</h1>
-                </Link>
-              </div>
-            </GridItem>
-          </GridContainer>
+          <SubmissionLink activityID={id} />
         </div>
       </Parallax>
       <div className={classNames(classes.main, classes.mainRaised)}>
         <div className={classes.container}>
           <GridContainer>
             <GridItem className={classes.navWrapper}>
-              <SubmissionStatus submissionList={submissionList} />
-              <SubmissionList submissionList={submissionList} />
+              {success ? (
+                <SubmissionStatus submissionList={data} activityID={id} />
+              ) : (
+                <SubmissionStatus submissionList={[]} activityID={id} />
+              )}
+              {success ? (
+                <SubmissionList submissionList={data} />
+              ) : (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    margin: "30px",
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              )}
             </GridItem>
           </GridContainer>
         </div>

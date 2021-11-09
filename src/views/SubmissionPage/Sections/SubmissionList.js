@@ -44,24 +44,33 @@ export default function SubmissionList(props) {
 
   const { submissionList } = props;
 
+  const myList = submissionList.map(
+    (ele) =>
+      (ele = {
+        ...ele,
+        filter:
+          ele.graded != -1
+            ? "Marked"
+            : ele.materials.length == 0
+            ? "Assigned"
+            : "Handed in",
+      })
+  );
+
   const [filter, setFilter] = React.useState(options[0].id);
-  const [filterList, setFilterList] = React.useState(submissionList);
+  const [filterList, setFilterList] = React.useState(myList);
 
   const handleChange = (event) => {
     const value = event.target.value;
     setFilter(value);
     if (value === "0") {
-      setFilterList([...submissionList]);
+      setFilterList([...myList]);
     } else if (value === "1") {
-      setFilterList(submissionList.filter((ele) => ele.isSubmitted === false));
+      setFilterList(myList.filter((ele) => ele.filter === "Assigned"));
     } else if (value === "2") {
-      setFilterList(
-        submissionList.filter(
-          (ele) => ele["isSubmitted"] === true && ele["isMarked"] === false
-        )
-      );
+      setFilterList(myList.filter((ele) => ele.filter === "Handed in"));
     } else {
-      setFilterList(submissionList.filter((ele) => ele["isMarked"] === true));
+      setFilterList(myList.filter((ele) => ele.filter === "Marked"));
     }
   };
 
@@ -89,9 +98,10 @@ export default function SubmissionList(props) {
       {filterList.map((ele) => (
         <GridItem className={classes.itemSubmission} key={ele.id}>
           <SubmissionDetail
-            isSubmitted={ele.isSubmitted}
-            isMarked={ele.isMarked}
-            file={ele.file}
+            activityID={ele.activity}
+            filter={ele.filter}
+            student={ele.student_detail}
+            file={ele.materials.length}
           />
         </GridItem>
       ))}

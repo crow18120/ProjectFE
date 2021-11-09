@@ -77,6 +77,12 @@ const submissionPageStyle = {
     padding: "0.5rem 0.5rem",
     margin: "0",
   },
+  dialogBack: {
+    padding: "25px 50px",
+  },
+  bodyBack: {
+    margin: "20px",
+  },
 };
 
 export default submissionPageStyle;

@@ -1,11 +1,10 @@
-import axios from "axios";
 import moment from "moment";
 import axiosInstance from "./axios.js";
 import { decodeJwtToken, getRole } from "./userServices.js";
 
 const MockDataClassList = [
   {
-    course: {
+    course_detail: {
       id: "1",
       name: "Web Design & Development",
     },
@@ -13,7 +12,7 @@ const MockDataClassList = [
     name: "GCH0714",
   },
   {
-    course: {
+    course_detail: {
       id: "2",
       name: "Advance Programming",
     },
@@ -21,7 +20,7 @@ const MockDataClassList = [
     name: "GCH0715",
   },
   {
-    course: {
+    course_detail: {
       id: "1",
       name: "Web Design & Development",
     },
@@ -29,7 +28,7 @@ const MockDataClassList = [
     name: "GCH0715",
   },
   {
-    course: {
+    course_detail: {
       id: "3",
       name: "Internet of Things",
     },
@@ -37,7 +36,7 @@ const MockDataClassList = [
     name: "GCH0716",
   },
   {
-    course: {
+    course_detail: {
       id: "2",
       name: "Advance Programming",
     },
@@ -45,7 +44,7 @@ const MockDataClassList = [
     name: "GCH0717",
   },
   {
-    course: {
+    course_detail: {
       id: "1",
       name: "Web Design & Development",
     },
@@ -98,7 +97,7 @@ export const addClassActivity = async (values, classID) => {
     },
     body: { formData },
   });
-
+  console.log(activity);
   if (values["file"].length != 0) {
     formData.append("activity", activity.data["id"]);
     for (const file in values["file"]) {
@@ -260,35 +259,13 @@ export const editClassWork = async (values, activityID) => {
   } else return await axiosInstance.get(`activities/activity/${activityID}/`);
 };
 
-export const addMaterialActivity = async (data) => {
-  let fd = new FormData();
-
-  data = {
-    ...data,
-    name: data["title"],
-    activity: "ac4ca190-db50-4dfb-9add-529c8564f6ea",
-  };
-  for (const key in data) {
-    if (key == "file") continue;
-    if (Object.hasOwnProperty.call(data, key)) {
-      const value = data[key];
-      fd.append(key, value);
-    }
-  }
-  for (const file in data["file"]) {
-    fd.append("file", data["file"][file]);
-  }
-  return await axios.post("http://127.0.0.1:8000/activities/ac-material/", fd, {
-    headers: {
-      "Content-Type": `multipart/form-data boundary=${fd._boundary}`,
-    },
-    body: { fd },
-  });
+export const deleteClassWork = async (activityID) => {
+  return await axiosInstance.delete(`activities/activity/${activityID}/`);
 };
 
-export const getFile = async (id) => {
-  id = "6b08e7c8-c32c-4886-b01c-8be07dd0f8c5";
-  return await axios
-    .get("http://127.0.0.1:8000/activities/ac-material/" + id + "/", {})
-    .then((res) => res);
+export const getStudentWithClass = async (classID) => {
+  return await axiosInstance
+    .get(`users/stu-class/${classID}/`)
+    .then((response) => response.data)
+    .then((data) => data.map((ele) => ele.student_detail));
 };

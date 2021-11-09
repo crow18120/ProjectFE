@@ -126,6 +126,9 @@ const classActivityStyle = {
   deadlineTimer: {
     color: "red",
   },
+  deadlineTimerGreen: {
+    color: "green",
+  },
   cardClassWork: {
     "&:hover": {
       backgroundColor: "#f5f5f5",

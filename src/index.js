@@ -17,25 +17,27 @@ import ClassPage from "views/ClassPage/ClassPage";
 import ClassWorkPage from "views/ClassWorkPage/ClassWorkPage";
 import SubmissionPage from "views/SubmissionPage/SubmissionPage";
 import ViewSubmissionPage from "views/ViewSubmissionPage/ViewSubmissionPage";
-import ViewSubFile from "views/ViewSubmissionPage/Sections/ViewSubFile";
 import ViewPDF from "views/ViewDPF/ViewDPF";
+import { PrivateRoute } from "components/PrivateRoute/PrivateRoute";
 var hist = createBrowserHistory();
 
 ReactDOM.render(
   <Router history={hist}>
     <Switch>
-      <Route path="/landing-page" component={LandingPage} />
-      <Route path="/pro-page" component={ProfilePage} />
-      <Route path="/profile-page" component={MyProfilePage} />
+      <PrivateRoute path="/landing-page" component={LandingPage} />
+      <PrivateRoute path="/pro-page" component={ProfilePage} />
+      <PrivateRoute path="/profile-page" component={MyProfilePage} />
       <Route path="/login-page" component={MyLoginPage} />
-      <Route path="/home-page" component={HomePage} />
-      <Route path="/class-page/:id" component={ClassPage} />
-      <Route path="/classwork-page/:id" component={ClassWorkPage} />
-      <Route path="/submission-page" component={SubmissionPage} />
-      <Route path="/view-sub-page" component={ViewSubmissionPage} />
-      <Route path="/view-sub-file" component={ViewSubFile} />
-      <Route path="/view-pdf" component={ViewPDF} />
-      <Route path="/" component={Components} />
+      <PrivateRoute path="/home-page" component={HomePage} />
+      <PrivateRoute path="/class-page/:id" component={ClassPage} />
+      <PrivateRoute path="/classwork-page/:id" component={ClassWorkPage} />
+      <PrivateRoute path="/submission-page/:id" component={SubmissionPage} />
+      <PrivateRoute
+        path="/view-sub-page/:id/:stID"
+        component={ViewSubmissionPage}
+      />
+      <PrivateRoute path="/view-pdf" component={ViewPDF} />
+      <PrivateRoute path="/" component={Components} />
     </Switch>
   </Router>,
   document.getElementById("root")

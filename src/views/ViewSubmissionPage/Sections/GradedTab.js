@@ -10,12 +10,11 @@ import styles from "assets/jss/material-kit-react/views/viewSubmissionSections/v
 
 const useStyles = makeStyles(styles);
 
-export default function GradedTab() {
+export default function GradedTab(props) {
   const classes = useStyles();
-
-  const [mark, setMark] = React.useState("");
+  const { graded } = props;
+  const [mark, setMark] = React.useState(graded);
   const [message, setMessage] = React.useState("");
-  //   const [valid, setValid] = React.useState(true);
 
   const schema = yup.object().shape({
     mark: yup

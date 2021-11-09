@@ -29,6 +29,7 @@ import DeadlineWork from "./Sections/DeadlineWork";
 import ClassPeople from "./Sections/ClassPeople.js";
 import AddClassActivity from "./Sections/AddClassActivity.js";
 import AddClassWork from "./Sections/AddClassWork.js";
+import Notification from "components/MyNotifications/Notification";
 
 import styles from "assets/jss/material-kit-react/views/classPage.js";
 
@@ -49,6 +50,11 @@ export default function ClassPage(props) {
 
   const { data, success } = usePromiseResult(() => getAllActivity(id));
 
+  const [notify, setNotify] = React.useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
   return success ? (
     <div>
       <Header
@@ -105,27 +111,31 @@ export default function ClassPage(props) {
                               classID={id}
                             />
                           ) : null}
-                          {data["activities"].map((item) =>
-                            item.is_submit ? (
-                              <ClassWork
-                                key={item.id}
-                                id={item.id}
-                                created={item.created_date}
-                                deadline={item.deadline_date}
-                                description={item.description}
-                              />
-                            ) : (
-                              <ClassActivity
-                                key={item.id}
-                                activity_id={item.id}
-                                tutor={data["class"].tutor_detail}
-                                created={item.created_date}
-                                description={item.description}
-                                title={item.name}
-                                file={item.materials}
-                              />
-                            )
-                          )}
+                          {data["activities"]
+                            .reverse()
+                            .map((item) =>
+                              item.is_submit ? (
+                                <ClassWork
+                                  key={item.id}
+                                  id={item.id}
+                                  created={item.created_date}
+                                  deadline={item.deadline_date}
+                                  description={item.description}
+                                  tutor={data["class"].tutor_detail}
+                                  title={item.name}
+                                />
+                              ) : (
+                                <ClassActivity
+                                  key={item.id}
+                                  activity_id={item.id}
+                                  tutor={data["class"].tutor_detail}
+                                  created={item.created_date}
+                                  description={item.description}
+                                  title={item.name}
+                                  file={item.materials}
+                                />
+                              )
+                            )}
                         </GridItem>
                       </GridContainer>
                     ),
@@ -147,6 +157,8 @@ export default function ClassPage(props) {
                                 created={item.created_date}
                                 deadline={item.deadline_date}
                                 description={item.description}
+                                tutor={data["class"].tutor_detail}
+                                title={item.name}
                               />
                             ) : null
                           )}
@@ -171,6 +183,7 @@ export default function ClassPage(props) {
           </GridContainer>
         </div>
       </div>
+      <Notification notify={notify} setNotify={setNotify} />
     </div>
   ) : null;
 }

@@ -4,7 +4,7 @@ import React from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // react-router-dom
-// import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 // @material-ui/icons
 
@@ -26,28 +26,31 @@ import styles from "assets/jss/material-kit-react/views/viewSubmissionPage.js";
 import ViewSubFile from "./Sections/ViewSubFile";
 import StudentSubmit from "./Sections/StudentSubmit";
 import TeacherWork from "./Sections/TeacherWork";
+import { usePromiseResult } from "use-promise-result";
+import { getSubmissionWithActAndStu } from "services/activityServices";
 
 const useStyles = makeStyles(styles);
 
 export default function ViewSubmissionPage(props) {
   const classes = useStyles();
 
-  // const files = [
-  //   {
-  //     id: "1",
-  //     file: {
-  //       name: "abc",
-  //       type: "pdf",
-  //     },
-  //   },
-  //   {
-  //     id: "2",
-  //     file: {
-  //       name: "abc",
-  //       type: "pdf",
-  //     },
-  //   },
-  // ];
+  const { id, stID } = useParams();
+
+  console.log(id, stID);
+
+  const { data, success } = usePromiseResult(() =>
+    getSubmissionWithActAndStu(id, stID)
+  );
+
+  const [viewFile, setViewFile] = React.useState(data);
+
+  React.useEffect(() => {
+    success
+      ? data.materials.length == 0
+        ? setViewFile("")
+        : setViewFile(data.materials[0])
+      : null;
+  }, [success]);
 
   const { ...rest } = props;
 
@@ -60,14 +63,19 @@ export default function ViewSubmissionPage(props) {
         isViewSubFile={true}
         {...rest}
       />
-      <StudentSubmit />
+      <StudentSubmit
+        classwork={data ? data.activity_detail.name : "Classwork"}
+        status={data ? data.graded : -1}
+        activityID={id}
+        student={data ? data.student_detail : null}
+      />
       <div
         style={{
           display: "flex",
         }}
       >
-        <ViewSubFile isViewSubFile={true} />
-        <TeacherWork />
+        <ViewSubFile isViewSubFile={true} file={viewFile} />
+        <TeacherWork submission={data} setViewFile={setViewFile} />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // react-router-dom
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 
 // @material-ui/icons
 import { MoreVert } from "@material-ui/icons";
@@ -33,12 +33,17 @@ import styles from "assets/jss/material-kit-react/views/classWorkPage.js";
 import { getRole } from "services/userServices.js";
 import { getActivity } from "services/activityServices";
 import { usePromiseResult } from "use-promise-result";
+import { deleteClassWork } from "services/classServices";
+import { Button, Dialog, Typography } from "@material-ui/core";
+
 const useStyles = makeStyles(styles);
 
 export default function ClassWorkPage(props) {
   const classes = useStyles();
 
   const { id } = useParams();
+
+  const history = useHistory();
 
   const role = getRole();
 
@@ -66,6 +71,17 @@ export default function ClassWorkPage(props) {
     message: "",
     type: "",
   });
+
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const goBack = () => {
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 3000);
+    });
+    history.goBack();
+  };
 
   React.useEffect(() => {
     success
@@ -152,6 +168,27 @@ export default function ClassWorkPage(props) {
                                 title: "Delete your classwork?",
                                 subTitle: "You can't undo this action.",
                                 attachment: [],
+                                onConfirm: async () => {
+                                  const result = await deleteClassWork(id);
+                                  if (result.status == 204) {
+                                    setConfirmDialog({
+                                      ...confirmDialog,
+                                      isOpen: false,
+                                    });
+                                    setNotify({
+                                      isOpen: true,
+                                      message: "Delete classwork successfully.",
+                                      type: "success",
+                                    });
+                                    setIsOpen(true);
+                                  } else if (result.status != 204) {
+                                    setNotify({
+                                      isOpen: true,
+                                      message: "Something error...",
+                                      type: "error",
+                                    });
+                                  }
+                                },
                               })
                             }
                           >
@@ -207,7 +244,7 @@ export default function ClassWorkPage(props) {
             </GridItem>
             <GridItem xs={12} sm={12} md={3} className={classes.navWrapper}>
               {role == "student" ? <ClassSubmission /> : null}
-              {role == "tutor" ? <ViewSubmission /> : null}
+              {role == "tutor" ? <ViewSubmission activityID={id} /> : null}
             </GridItem>
           </GridContainer>
         </div>
@@ -225,6 +262,12 @@ export default function ClassWorkPage(props) {
         isEdit={true}
       />
       <Notification notify={notify} setNotify={setNotify} />
+      <Dialog open={isOpen} classes={{ paperScrollPaper: classes.dialogBack }}>
+        <Typography classes={{ body1: classes.bodyBack }}>
+          This Classwork is not available.
+        </Typography>
+        <Button onClick={goBack}>Go Back</Button>
+      </Dialog>
     </div>
   ) : null;
 }

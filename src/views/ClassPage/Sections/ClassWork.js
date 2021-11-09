@@ -16,13 +16,13 @@ import GridItem from "components/Grid/GridItem";
 
 import styles from "assets/jss/material-kit-react/views/classSections/classActivityStyle.js";
 
-import image from "assets/img/bg7.jpg";
+import { baseURL } from "services/axios";
 
 const useStyles = makeStyles(styles);
 
 export default function ClassWork(props) {
   const classes = useStyles();
-  const { id, created, deadline, description } = props;
+  const { id, created, deadline, description, tutor, title } = props;
   return (
     <Link to={`/classwork-page/${id}`}>
       <Card className={classes.card + " " + classes.cardClassWork}>
@@ -33,13 +33,16 @@ export default function ClassWork(props) {
           <GridContainer className={classes.cardHeaderContainer}>
             <GridItem xs={2} sm={2} md={2} className={classes.avatar}>
               <img
-                src={image}
+                src={baseURL + tutor.profile_image}
                 alt="..."
                 className={classes.imgRoundedCircle + " " + classes.imgFluid}
               />
             </GridItem>
             <GridItem xs={10} sm={10} md={10}>
-              <p className={classes.name}>Đây là tên Activity.</p>
+              <p className={classes.name}>
+                {tutor.first_name} {tutor.last_name} added a new classwork:{" "}
+                {title}
+              </p>
               <p className={classes.timer}>
                 {new Date(created).toLocaleString("en-US")}
               </p>
@@ -54,12 +57,19 @@ export default function ClassWork(props) {
         <CardFooter
           className={classes.cardFooter + " " + classes.cardFooterClassWork}
         >
-          <p className={classes.deadlineTimer}>
-            Deadline:{" "}
-            {deadline == null
-              ? "No due date"
-              : new Date(deadline).toLocaleString("en-US")}
-          </p>
+          {deadline == null ? (
+            <p>Deadline: No due date</p>
+          ) : new Date(deadline) < new Date() ? (
+            <p className={classes.deadlineTimer}>
+              Deadline:
+              {new Date(deadline).toLocaleString("en-US")}
+            </p>
+          ) : (
+            <p className={classes.deadlineTimerGreen}>
+              Deadline:
+              {new Date(deadline).toLocaleString("en-US")}
+            </p>
+          )}
         </CardFooter>
       </Card>
     </Link>

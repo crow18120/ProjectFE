@@ -18,43 +18,11 @@ import Danger from "components/Typography/Danger.js";
 import Success from "components/Typography/Success";
 
 import styles from "assets/jss/material-kit-react/views/viewSubmissionSections/viewSubmissionStyle.js";
+import { usePromiseResult } from "use-promise-result";
+import { getStudentWithActivity } from "services/activityServices";
+import { Link, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(styles);
-
-const options = [
-  {
-    id: "0",
-    filter: "All",
-  },
-  {
-    id: "1",
-    filter: "Assigned",
-  },
-  {
-    id: "2",
-    filter: "Handed in",
-  },
-  {
-    id: "3",
-    filter: "Marked",
-  },
-  {
-    id: "4",
-    filter: "All",
-  },
-  {
-    id: "5",
-    filter: "Assigned",
-  },
-  {
-    id: "6",
-    filter: "Handed in",
-  },
-  {
-    id: "7",
-    filter: "Marked",
-  },
-];
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -66,21 +34,58 @@ const MenuProps = {
   },
 };
 
-export default function StudentSubmit() {
+export default function StudentSubmit(props) {
   const classes = useStyles();
+
+  const history = useHistory();
+
+  const { classwork, status, activityID, student } = props;
+
+  const { data, success } = usePromiseResult(() =>
+    getStudentWithActivity(activityID)
+  );
+
+  const [myOption, setMyOption] = React.useState([
+    {
+      id: "0",
+      name: "Student name ...",
+    },
+  ]);
+
+  const [myValue, setMyValue] = React.useState("0");
+
+  React.useEffect(() => {
+    student ? setMyValue(student.id) : null;
+  }, [student]);
+
+  React.useEffect(() => {
+    success
+      ? setMyOption(
+          data.map((ele) => {
+            return {
+              id: ele.id,
+              name: ele.first_name + " " + ele.last_name,
+            };
+          })
+        )
+      : null;
+  }, [success]);
+
+  const handleChange = (event) => {
+    setMyValue(event.target.value);
+    history.push(`/view-sub-page/${activityID}/${event.target.value}`);
+  };
 
   return (
     <GridContainer className={classes.studentSubmitContent}>
       <GridItem xs={4} className={classes.titleSubmission}>
-        <h3>
-          Đây sẽ là tên tiêu đề. Đây sẽ là tên tiêu đề.Đây sẽ là tên tiêu đề.
-        </h3>
+        <h3>{classwork}</h3>
       </GridItem>
       <GridItem xs={4}>
         <FormControl xs={8} className={classes.filterStudent}>
           <Select
-            // value={filter}
-            // onChange={handleChange}
+            value={myValue}
+            onChange={handleChange}
             displayEmpty
             inputProps={{
               "aria-label": "Without label",
@@ -88,21 +93,26 @@ export default function StudentSubmit() {
             input={<OutlinedInput className={classes.filterOutline} />}
             MenuProps={MenuProps}
           >
-            {options.map((item) => (
+            {myOption.map((item) => (
               <MenuItem key={item.id} value={item.id}>
-                {item.filter}
+                <Link to={`/view-sub-page/${activityID}/${item.id}`}>
+                  {item.name}
+                </Link>
               </MenuItem>
             ))}
           </Select>
         </FormControl>
       </GridItem>
       <GridItem xs={4} className={classes.gradedStudentSubmit}>
-        <p className={classes.statusStudentSubmit}>
-          <Danger>Unmarked</Danger>
-        </p>
-        <p className={classes.statusStudentSubmit}>
-          <Success>Marked</Success>
-        </p>
+        {status == -1 ? (
+          <p className={classes.statusStudentSubmit}>
+            <Danger>Unmarked</Danger>
+          </p>
+        ) : (
+          <p className={classes.statusStudentSubmit}>
+            <Success>Marked</Success>
+          </p>
+        )}
         <p className={classes.statusStudentSubmit}>
           <Button color="primary">Submit</Button>
         </p>

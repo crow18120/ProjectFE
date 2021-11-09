@@ -37,14 +37,17 @@ function a11yProps(index) {
   };
 }
 
-export default function TeacherWork() {
+export default function TeacherWork(props) {
   const classes = useStyles();
-  console.log(classes);
+
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const { submission, setViewFile } = props;
+
   return (
     <Box
       sx={{
@@ -72,10 +75,14 @@ export default function TeacherWork() {
         />
       </Tabs>
       <TabPanel value={value} index={0}>
-        <SubFileTab />
+        <SubFileTab submission={submission} setViewFile={setViewFile} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <GradedTab />
+        <GradedTab
+          graded={
+            submission ? (submission.graded != -1 ? submission.graded : "") : ""
+          }
+        />
       </TabPanel>
     </Box>
   );

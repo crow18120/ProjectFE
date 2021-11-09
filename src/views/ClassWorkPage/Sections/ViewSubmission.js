@@ -20,9 +20,17 @@ import Warning from "components/Typography/Warning";
 
 const useStyles = makeStyles(styles);
 
-export default function ViewSubmission() {
-  const classes = useStyles();
+import { usePromiseResult } from "use-promise-result";
+import { getAllSubmissionWithActivity } from "services/activityServices";
 
+export default function ViewSubmission(props) {
+  const classes = useStyles();
+  const { activityID } = props;
+
+  const { data, success } = usePromiseResult(() =>
+    getAllSubmissionWithActivity(activityID)
+  );
+  console.log(data);
   return (
     <Card className={classes.card}>
       <CardHeader color="primary" className={classes.cardHeader}>
@@ -31,21 +39,42 @@ export default function ViewSubmission() {
       <CardBody className={classes.cardBody}>
         <GridContainer justify={"center"} className={classes.infoContainer}>
           <GridItem xs={4} className={classes.infoStatus}>
-            <h2>0</h2>
+            {success ? (
+              <h2>
+                {
+                  data.filter(
+                    (ele) => ele.graded == -1 && ele.materials.length > 0
+                  ).length
+                }
+              </h2>
+            ) : (
+              <h2>0</h2>
+            )}
             <Warning>Hand in</Warning>
           </GridItem>
           <GridItem xs={4} className={classes.infoStatus}>
-            <h2>0</h2>
+            {success ? (
+              <h2>{data.filter((ele) => ele.materials.length == 0).length}</h2>
+            ) : (
+              <h2>0</h2>
+            )}
             <Danger>Assigned</Danger>
           </GridItem>
           <GridItem xs={4} className={classes.infoStatus}>
-            <h2>0</h2>
+            {success ? (
+              <h2>{data.filter((ele) => ele.graded != -1).length}</h2>
+            ) : (
+              <h2>0</h2>
+            )}
             <Success>Marked</Success>
           </GridItem>
         </GridContainer>
       </CardBody>
       <CardFooter className={classes.cardFooter}>
-        <Link to="/submission-page" className={classes.linkView}>
+        <Link
+          to={`/submission-page/${activityID}`}
+          className={classes.linkView}
+        >
           <Button color="rose" className={classes.btnSubmit}>
             View
           </Button>

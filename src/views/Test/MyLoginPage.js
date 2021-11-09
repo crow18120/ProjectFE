@@ -30,6 +30,7 @@ import { loginService, getRole } from "services/userServices";
 
 import * as yup from "yup";
 import { useFormik } from "formik";
+import { decodeJwtToken } from "services/userServices";
 
 const useStyles = makeStyles(styles);
 
@@ -83,8 +84,9 @@ export default function LoginPage(props) {
   });
 
   const role = getRole();
+  const decode = decodeJwtToken();
 
-  return role != null ? (
+  return role != null && decode.exp * 1000 > new Date() ? (
     role == "tutor" || role == "student" ? (
       <Redirect
         to={{

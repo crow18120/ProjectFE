@@ -68,13 +68,9 @@ export function MyCustomHeaderRightLinks(props) {
             color: "transparent",
           }}
           dropdownList={[
-            "Action",
-            "Another action",
-            "Something else here",
             <Link to={"/profile-page"} className={classes.link}>
               Profile
             </Link>,
-            { divider: true },
             "Change Password",
             { divider: true },
             isSignIn ? (

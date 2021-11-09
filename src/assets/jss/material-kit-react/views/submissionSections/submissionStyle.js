@@ -87,6 +87,13 @@ const classActivityStyle = {
     color: "#000",
     margin: "0",
   },
+  namePersonStyle: {
+    color: "#000",
+    margin: "0",
+    fontWeight: "300",
+    fontSize: "1rem",
+    lineHeight: "20px",
+  },
   itemSubmission: {
     width: "fit-content",
     padding: "1rem",

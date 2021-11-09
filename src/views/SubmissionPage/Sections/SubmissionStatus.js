@@ -14,32 +14,33 @@ import Warning from "components/Typography/Warning";
 
 import styles from "assets/jss/material-kit-react/views/submissionSections/submissionStyle.js";
 
-const useStyles = makeStyles(styles);
+import { usePromiseResult } from "use-promise-result";
+import { getActivity } from "services/activityServices";
 
-const initialValues = {
-  title: "Đây là tên classwork",
-};
+const useStyles = makeStyles(styles);
 
 export default function SubmissionStatus(props) {
   const classes = useStyles();
 
-  const { submissionList } = props;
+  const { submissionList, activityID } = props;
+
+  const { data, success } = usePromiseResult(() => getActivity(activityID));
 
   let assigned = 0,
     marked = 0,
     handedIn = 0;
-  submissionList.forEach((element) => {
-    !element["isSubmitted"]
-      ? (assigned += 1)
-      : element["isMarked"]
-      ? (marked += 1)
-      : (handedIn += 1);
+  submissionList.forEach((ele) => {
+    ele.graded != -1
+      ? marked++
+      : ele.materials.length == 0
+      ? assigned++
+      : handedIn++;
   });
   return (
     <GridContainer className={classes.infoContainer}>
       <GridItem xs={12}>
         <div className={classes.infoSubmission}>
-          <h2>{initialValues.title}</h2>
+          <h2>{success ? data.name : "Classwork name..."}</h2>
         </div>
       </GridItem>
       <GridItem xs={4} className={classes.infoStatus}>
