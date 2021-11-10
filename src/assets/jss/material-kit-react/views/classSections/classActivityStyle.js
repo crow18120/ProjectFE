@@ -1,7 +1,9 @@
 import typographyStyle from "../componentsSections/typographyStyle";
+import modalStyle from "assets/jss/material-kit-react/modalStyle.js";
 
 const classActivityStyle = {
   ...typographyStyle,
+  ...modalStyle,
   card: {
     padding: "0.5rem 0rem",
   },
@@ -148,11 +150,14 @@ const classActivityStyle = {
   cardBodyDeadline: {
     padding: "0.25rem 1rem 0.25rem 1rem",
     borderBottom: "0.0625rem solid #dadce0",
-    height: "135px",
+    maxHeight: "135px",
     textOverflow: "ellipsis",
     overflow: "hidden",
     "& p": {
       lineHeight: "25px",
+    },
+    "& div": {
+      fontSize: "16px",
     },
   },
   cardFooterDeadline: {
@@ -207,6 +212,7 @@ const classActivityStyle = {
   abc: {
     width: "100%",
     maxWidth: "100%",
+    height: "100vh",
   },
 };
 

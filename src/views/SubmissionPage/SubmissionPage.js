@@ -28,6 +28,7 @@ import SubmissionList from "./Sections/SubmissionList";
 import { usePromiseResult } from "use-promise-result";
 import { getAllSubmissionWithActivity } from "services/activityServices";
 import SubmissionLink from "./Sections/SubmissionLink";
+import Footer from "components/Footer/Footer";
 
 const useStyles = makeStyles(styles);
 
@@ -91,6 +92,7 @@ export default function SubmissionPage(props) {
           </GridContainer>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

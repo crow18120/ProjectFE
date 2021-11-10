@@ -51,7 +51,6 @@ const submissionStyle = {
   },
   materialItem: {
     borderRadius: "0.5rem",
-    border: "0.0625rem solid #dadce0",
     margin: "0.5rem 0rem",
     padding: "0",
   },
@@ -127,6 +126,10 @@ const submissionStyle = {
   abc: {
     width: "100%",
     maxWidth: "100%",
+  },
+  textMark: {
+    padding: "15px 0px",
+    color: "green",
   },
 };
 

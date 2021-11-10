@@ -39,7 +39,7 @@ export default function StudentSubmit(props) {
 
   const history = useHistory();
 
-  const { classwork, status, activityID, student } = props;
+  const { classwork, status, activityID, student, error, handleSubmit } = props;
 
   const { data, success } = usePromiseResult(() =>
     getStudentWithActivity(activityID)
@@ -74,6 +74,11 @@ export default function StudentSubmit(props) {
   const handleChange = (event) => {
     setMyValue(event.target.value);
     history.push(`/view-sub-page/${activityID}/${event.target.value}`);
+    location.reload();
+  };
+
+  const handleClick = () => {
+    handleSubmit();
   };
 
   return (
@@ -104,7 +109,7 @@ export default function StudentSubmit(props) {
         </FormControl>
       </GridItem>
       <GridItem xs={4} className={classes.gradedStudentSubmit}>
-        {status == -1 ? (
+        {status == "Unmarked" ? (
           <p className={classes.statusStudentSubmit}>
             <Danger>Unmarked</Danger>
           </p>
@@ -114,7 +119,15 @@ export default function StudentSubmit(props) {
           </p>
         )}
         <p className={classes.statusStudentSubmit}>
-          <Button color="primary">Submit</Button>
+          {error == "" ? (
+            <Button color="primary" onClick={handleClick}>
+              Submit
+            </Button>
+          ) : (
+            <Button color="primary" disabled>
+              Submit
+            </Button>
+          )}
         </p>
       </GridItem>
     </GridContainer>

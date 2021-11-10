@@ -14,7 +14,7 @@ import GridItem from "components/Grid/GridItem";
 const useStyles = makeStyles(styles);
 
 export default function SubmissionMaterial(props) {
-  const { name, type, id, handleDeleteFile } = props;
+  const { name, type, id, handleDeleteFile, isEdit } = props;
   const classes = useStyles();
 
   const handleOnClick = () => {
@@ -30,14 +30,16 @@ export default function SubmissionMaterial(props) {
         <p className={classes.nameFile}>{name}</p>
         <p className={classes.typeFile}>{type}</p>
       </GridItem>
-      <GridItem xs={2} sm={2} md={2} className={classes.btnFile}>
-        <IconButton
-          className={classes.MuiIconButtonRoot}
-          onClick={handleOnClick}
-        >
-          <Close />
-        </IconButton>
-      </GridItem>
+      {!isEdit ? (
+        <GridItem xs={2} sm={2} md={2} className={classes.btnFile}>
+          <IconButton
+            className={classes.MuiIconButtonRoot}
+            onClick={handleOnClick}
+          >
+            <Close />
+          </IconButton>
+        </GridItem>
+      ) : null}
     </GridContainer>
   );
 }

@@ -12,9 +12,9 @@ const useStyles = makeStyles(styles);
 
 export default function GradedTab(props) {
   const classes = useStyles();
-  const { graded } = props;
+  const { graded, handleChangeGraded, error, handleChangeError } = props;
   const [mark, setMark] = React.useState(graded);
-  const [message, setMessage] = React.useState("");
+  const [message, setMessage] = React.useState(error);
 
   const schema = yup.object().shape({
     mark: yup
@@ -24,14 +24,25 @@ export default function GradedTab(props) {
       .min(0, "Minimum value is 0.")
       .max(100, "Maximum value is 100."),
   });
+
   const handleChange = (e) => {
     const value = e.currentTarget.value;
     setMark(value);
+    handleChangeGraded(mark);
     setMessage("");
     schema.validate({ mark: value }).catch((err) => {
       setMessage(err.errors);
     });
+    handleChangeError(message);
   };
+
+  React.useEffect(() => {
+    handleChangeError(message);
+  }, [message]);
+
+  React.useEffect(() => {
+    handleChangeGraded(mark);
+  }, [mark]);
 
   return (
     <Grid container className={classes.subFileTab}>

@@ -61,7 +61,7 @@ export const getAllClass = async () => {
       return await axiosInstance
         .get("classes/class-student/" + payload.account_id + "/")
         .then((response) => response.data)
-        .then((data) => data.map((ele) => ele.class_obj));
+        .then((data) => data.map((ele) => ele.class_detail));
     case "tutor":
       return await axiosInstance
         .get("classes/class-tutor/" + payload.account_id + "/")
@@ -266,6 +266,31 @@ export const deleteClassWork = async (activityID) => {
 export const getStudentWithClass = async (classID) => {
   return await axiosInstance
     .get(`users/stu-class/${classID}/`)
+    .then((response) => response.data);
+};
+
+export const getTutorWithClass = async (classID) => {
+  return await axiosInstance
+    .get(`users/tutor-class/${classID}/`)
+    .then((response) => response.data);
+};
+
+export const getMemberInClass = async (classID) => {
+  const tutor = await axiosInstance
+    .get(`users/tutor-class/${classID}/`)
+    .then((response) => response.data);
+  const students = await axiosInstance
+    .get(`users/stu-class/${classID}/`)
+    .then((response) => response.data);
+
+  return { tutor: tutor, students: students };
+};
+
+export const getCourseWithClass = async (classID) => {
+  return await axiosInstance
+    .get(`classes/class/${classID}/`)
     .then((response) => response.data)
-    .then((data) => data.map((ele) => ele.student_detail));
+    .then((data) => {
+      return data["course_detail"];
+    });
 };

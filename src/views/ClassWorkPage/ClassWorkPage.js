@@ -35,6 +35,7 @@ import { getActivity } from "services/activityServices";
 import { usePromiseResult } from "use-promise-result";
 import { deleteClassWork } from "services/classServices";
 import { Button, Dialog, Typography } from "@material-ui/core";
+import Footer from "components/Footer/Footer";
 
 const useStyles = makeStyles(styles);
 
@@ -243,12 +244,13 @@ export default function ClassWorkPage(props) {
               </GridContainer>
             </GridItem>
             <GridItem xs={12} sm={12} md={3} className={classes.navWrapper}>
-              {role == "student" ? <ClassSubmission /> : null}
+              {role == "student" ? <ClassSubmission activityID={id} /> : null}
               {role == "tutor" ? <ViewSubmission activityID={id} /> : null}
             </GridItem>
           </GridContainer>
         </div>
       </div>
+      <Footer />
       <ConfirmDialog
         confirmDialog={confirmDialog}
         setConfirmDialog={setConfirmDialog}

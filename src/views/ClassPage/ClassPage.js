@@ -36,6 +36,7 @@ import styles from "assets/jss/material-kit-react/views/classPage.js";
 import { getRole } from "services/userServices.js";
 import { getAllActivity } from "services/activityServices.js";
 import { usePromiseResult } from "use-promise-result";
+import Footer from "components/Footer/Footer.js";
 
 const useStyles = makeStyles(styles);
 
@@ -102,7 +103,7 @@ export default function ClassPage(props) {
                     tabContent: (
                       <GridContainer justify={"center"}>
                         <GridItem xs={12} sm={12} md={3}>
-                          <DeadlineWork />
+                          <DeadlineWork classID={id} />
                         </GridItem>
                         <GridItem xs={12} sm={12} md={9}>
                           {role == "tutor" ? (
@@ -172,7 +173,7 @@ export default function ClassPage(props) {
                     tabContent: (
                       <GridContainer justify={"center"}>
                         <GridItem xs={12} sm={12} md={8}>
-                          <ClassPeople />
+                          <ClassPeople classID={id} />
                         </GridItem>
                       </GridContainer>
                     ),
@@ -184,6 +185,7 @@ export default function ClassPage(props) {
         </div>
       </div>
       <Notification notify={notify} setNotify={setNotify} />
+      <Footer />
     </div>
   ) : null;
 }

@@ -52,7 +52,7 @@ export default function ConfirmDialog(props) {
         <Typography variant="subtitle1">{confirmDialog.subTitle}</Typography>
         {confirmDialog.attachment.map((item, index) => (
           <Typography key={item.id} variant="subtitle2">
-            {index + 1}. {item.file.name}
+            {index + 1}. {item.file.name || item.file.file_name}
           </Typography>
         ))}
       </DialogContent>

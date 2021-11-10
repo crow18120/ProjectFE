@@ -46,7 +46,14 @@ export default function TeacherWork(props) {
     setValue(newValue);
   };
 
-  const { submission, setViewFile } = props;
+  const {
+    submission,
+    setViewFile,
+    graded,
+    handleChangeGraded,
+    error,
+    handleChangeError,
+  } = props;
 
   return (
     <Box
@@ -79,9 +86,10 @@ export default function TeacherWork(props) {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <GradedTab
-          graded={
-            submission ? (submission.graded != -1 ? submission.graded : "") : ""
-          }
+          graded={graded}
+          handleChangeGraded={handleChangeGraded}
+          error={error}
+          handleChangeError={handleChangeError}
         />
       </TabPanel>
     </Box>
