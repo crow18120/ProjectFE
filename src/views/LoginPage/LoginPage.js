@@ -1,15 +1,17 @@
 import React from "react";
+import {
+  // useHistory,
+  Redirect,
+} from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
-import Email from "@material-ui/icons/Email";
-import People from "@material-ui/icons/People";
+import { Person } from "@material-ui/icons";
 // core components
 import Header from "components/Header/Header.js";
-import HeaderLinks from "components/Header/HeaderLinks.js";
-import Footer from "components/Footer/Footer.js";
+import { MyCustomHeaderLeftLinks } from "components/Header/MyCustomHeaderLinks";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Button from "components/CustomButtons/Button.js";
@@ -18,27 +20,89 @@ import CardBody from "components/Card/CardBody.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
+import Notification from "components/MyNotifications/Notification.js";
 
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 
 import image from "assets/img/bg7.jpg";
 
+import { loginService, getRole } from "services/userServices";
+
+import * as yup from "yup";
+import { useFormik } from "formik";
+import { decodeJwtToken } from "services/userServices";
+
 const useStyles = makeStyles(styles);
+
+const validationSchema = yup.object({
+  username: yup
+    .string()
+    .min(5, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Username is required"),
+  password: yup
+    .string()
+    .min(6, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Password is requried"),
+});
+
+const myInitialValues = Object.freeze({
+  username: "",
+  password: "",
+});
 
 export default function LoginPage(props) {
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+  const [notify, setNotify] = React.useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+
   setTimeout(function () {
     setCardAnimation("");
   }, 700);
+
   const classes = useStyles();
+
   const { ...rest } = props;
-  return (
+
+  const formik = useFormik({
+    initialValues: myInitialValues,
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      const isLoginSuccess = await loginService(values);
+      isLoginSuccess == false
+        ? setNotify({
+            isOpen: true,
+            message: "Login false. Wrong username or password...",
+            type: "error",
+          })
+        : null;
+    },
+  });
+
+  const role = getRole();
+  const decode = decodeJwtToken();
+
+  return role != null && decode.exp * 1000 > new Date() ? (
+    role == "tutor" || role == "student" ? (
+      <Redirect
+        to={{
+          pathname: "/",
+          state: { isLogin: true },
+        }}
+      />
+    ) : (
+      <Redirect to={{ pathname: "/admin" }} />
+    )
+  ) : (
     <div>
       <Header
         absolute
         color="transparent"
-        brand="Material Kit React"
-        rightLinks={<HeaderLinks />}
+        brand={<MyCustomHeaderLeftLinks />}
         {...rest}
       />
       <div
@@ -53,44 +117,24 @@ export default function LoginPage(props) {
           <GridContainer justify="center">
             <GridItem xs={12} sm={12} md={4}>
               <Card className={classes[cardAnimaton]}>
-                <form className={classes.form}>
+                <form className={classes.form} onSubmit={formik.handleSubmit}>
                   <CardHeader color="primary" className={classes.cardHeader}>
                     <h4>Login</h4>
-                    <div className={classes.socialLine}>
-                      <Button
-                        justIcon
-                        href="#pablo"
-                        target="_blank"
-                        color="transparent"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className={"fab fa-twitter"} />
-                      </Button>
-                      <Button
-                        justIcon
-                        href="#pablo"
-                        target="_blank"
-                        color="transparent"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className={"fab fa-facebook"} />
-                      </Button>
-                      <Button
-                        justIcon
-                        href="#pablo"
-                        target="_blank"
-                        color="transparent"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <i className={"fab fa-google-plus-g"} />
-                      </Button>
-                    </div>
                   </CardHeader>
-                  <p className={classes.divider}>Or Be Classical</p>
                   <CardBody>
                     <CustomInput
-                      labelText="First Name..."
-                      id="first"
+                      labelText="Username"
+                      id="username"
+                      name="username"
+                      error={
+                        formik.touched.username &&
+                        Boolean(formik.errors.username)
+                      }
+                      onChange={formik.handleChange}
+                      value={formik.values.username}
+                      helperText={
+                        formik.touched.username && formik.errors.username
+                      }
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -98,29 +142,24 @@ export default function LoginPage(props) {
                         type: "text",
                         endAdornment: (
                           <InputAdornment position="end">
-                            <People className={classes.inputIconsColor} />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                    <CustomInput
-                      labelText="Email..."
-                      id="email"
-                      formControlProps={{
-                        fullWidth: true,
-                      }}
-                      inputProps={{
-                        type: "email",
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <Email className={classes.inputIconsColor} />
+                            <Person className={classes.inputIconsColor} />
                           </InputAdornment>
                         ),
                       }}
                     />
                     <CustomInput
                       labelText="Password"
-                      id="pass"
+                      id="password"
+                      name="password"
+                      error={
+                        formik.touched.password &&
+                        Boolean(formik.errors.password)
+                      }
+                      onChange={formik.handleChange}
+                      value={formik.values.password}
+                      helperText={
+                        formik.touched.password && formik.errors.password
+                      }
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -138,8 +177,8 @@ export default function LoginPage(props) {
                     />
                   </CardBody>
                   <CardFooter className={classes.cardFooter}>
-                    <Button simple color="primary" size="lg">
-                      Get started
+                    <Button simple color="primary" size="lg" type="submit">
+                      Sign in
                     </Button>
                   </CardFooter>
                 </form>
@@ -147,8 +186,8 @@ export default function LoginPage(props) {
             </GridItem>
           </GridContainer>
         </div>
-        <Footer whiteFont />
       </div>
+      <Notification notify={notify} setNotify={setNotify} />
     </div>
   );
 }

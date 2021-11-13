@@ -25,7 +25,7 @@ export function MyCustomHeaderLeftLinks(props) {
   return (
     <List className={classes.list}>
       <ListItem className={classes.listItem} color="transparent">
-        <Link to={"/home-page"} className={classes.leftLink}>
+        <Link to={"/"} className={classes.leftLink}>
           RBC University
         </Link>
       </ListItem>

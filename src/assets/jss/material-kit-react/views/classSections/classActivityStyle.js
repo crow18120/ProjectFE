@@ -81,7 +81,7 @@ const classActivityStyle = {
     alignItems: "center",
   },
   materialContainer: {
-    justifyContent: "space-between",
+    justifyContent: "left",
     paddingLeft: "1rem",
     width: "100%",
   },

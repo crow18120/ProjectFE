@@ -67,9 +67,13 @@ export const getAllClass = async () => {
         .get("classes/class-tutor/" + payload.account_id + "/")
         .then((response) => response.data);
     case "staff":
-      return [];
+      return await axiosInstance
+        .get("classes/class/")
+        .then((response) => response.data);
     case "admin":
-      return [];
+      return await axiosInstance
+        .get("classes/class/")
+        .then((response) => response.data);
     case null:
       return MockDataClassList;
   }

@@ -42,7 +42,12 @@ const javascriptStyles = {
     },
   },
   myFormWidth: {
+    maxWidth: "100vw",
     minWidth: "50vw",
+  },
+  myFormAdminWidth: {
+    maxWidth: "100vw",
+    width: "80vw",
   },
   modalFooterActivity: {
     justifyContent: "space-between",
@@ -67,6 +72,9 @@ const javascriptStyles = {
       paddingBottom: "1rem",
       borderBottom: "0.0625rem solid #dadce0",
     },
+  },
+  materialItemCourses: {
+    border: "none !important",
   },
 };
 

@@ -12,6 +12,7 @@ import Input from "@material-ui/core/Input";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import { FormHelperText } from "@material-ui/core";
 // @material-ui/icons
 import Close from "@material-ui/icons/Close";
 import { FileCopy } from "@material-ui/icons";
@@ -25,6 +26,7 @@ import CustomInput from "components/CustomInput/CustomInput";
 import DatePicker from "components/MyCustomDateTimePicker/DatePicker";
 import DateTimePicker from "components/MyCustomDateTimePicker/DateTimePicker";
 import SubmissionMaterial from "components/Material/SubmissionMaterial";
+import Controls from "components/MyCustomControl/Controls";
 // import validation yup, formik
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -32,10 +34,21 @@ import { useFormik } from "formik";
 import styles from "assets/jss/material-kit-react/components/myCustomeDialog.js";
 import { v4 } from "uuid";
 
-import { addClassActivity } from "services/classServices";
-import { editClassActivity } from "services/classServices";
-import { addClassWork } from "services/classServices";
-import { editClassWork } from "services/classServices";
+import {
+  addClassActivity,
+  editClassActivity,
+  addClassWork,
+  editClassWork,
+} from "services/classServices";
+import {
+  editStudent,
+  addStudent,
+  getAllStudent,
+} from "services/studentServices";
+import { editTutor, addTutor, getAllTutor } from "services/tutorServices";
+import { addCourse } from "services/courseServices";
+import { editCourse } from "services/courseServices";
+import { getAllCourse } from "services/courseServices";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -457,6 +470,7 @@ export function ClassActivityFormDialog(props) {
 }
 ///
 
+///
 export function ClassWorkFormDialog(props) {
   const classes = useStyles();
   const {
@@ -713,6 +727,497 @@ export function ClassWorkFormDialog(props) {
               <GridItem xs={12} className={classes.materialItem} key={item.id}>
                 <SubmissionMaterial
                   name={item.file.name || item.file.file_name}
+                  id={item.id}
+                  handleDeleteFile={handleDeleteFile}
+                />
+              </GridItem>
+            ))}
+          </GridContainer>
+        </DialogContent>
+        <DialogActions
+          className={classes.modalFooter + " " + classes.modalFooterActivity}
+        >
+          <div className={classes.modalFooterActivityLeft}>
+            <Tooltip
+              id="uploadfile-tooltip"
+              title="Upload file"
+              placement={"bottom"}
+            >
+              <IconButton size="small" color="inherit" onClick={handleClick}>
+                <FileCopy />
+              </IconButton>
+            </Tooltip>
+          </div>
+          <div>
+            <Button color="transparent" type="submit" simple>
+              Submit
+            </Button>
+            <Button color="warning" type="reset" simple>
+              Reset
+            </Button>
+          </div>
+        </DialogActions>
+      </form>
+    </Dialog>
+  );
+}
+///
+
+///
+export function UserFormDialog(props) {
+  const classes = useStyles();
+  const {
+    classicModal,
+    setClassicModal,
+    myInitialValues,
+    setNotify,
+    index,
+    role,
+    setData,
+  } = props;
+
+  for (const key in myInitialValues) {
+    if (key == "DOB") continue;
+    if (myInitialValues[key] == null) {
+      myInitialValues[key] = "";
+    }
+  }
+
+  const formik = useFormik({
+    initialValues: myInitialValues,
+    validationSchema: yup.object({
+      first_name: yup.string().required("First name is required."),
+      last_name: yup.string().required("Last name is required."),
+      email: yup
+        .string()
+        .email("Enter a valid email.")
+        .required("Email is required."),
+      mobile: yup
+        .string()
+        .required("Phone is required.")
+        .max(10, "Must be 10 numbers.")
+        .min(10, "Must be 10 numbers.")
+        .matches(
+          /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
+          "Enter a valid phone."
+        ),
+      location: yup.string().required("Location is required."),
+      DOB: yup
+        .date("Date of birth is required.")
+        .required("Date of birth is required."),
+    }),
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      if (role == "Student") {
+        if (index == -1) {
+          const result = await addStudent(values);
+          if (result.status == 200) {
+            setClassicModal(false);
+            setNotify({
+              isOpen: true,
+              message: "Add student successfully.",
+              type: "success",
+            });
+            const data = await getAllStudent();
+            setData(data);
+          } else if (result.status == 400) {
+            setNotify({
+              isOpen: true,
+              message: "Email is already exist.",
+              type: "error",
+            });
+          }
+        } else {
+          const result = await editStudent(values);
+          if (result.status == 200) {
+            setClassicModal(false);
+            setNotify({
+              isOpen: true,
+              message: "Edit student successfully.",
+              type: "success",
+            });
+            const data = await getAllStudent();
+            setData(data);
+          } else {
+            setNotify({
+              isOpen: true,
+              message: "Something error...",
+              type: "error",
+            });
+          }
+        }
+      } else if (role == "Tutor") {
+        if (index == -1) {
+          const result = await addTutor(values);
+          if (result.status == 200) {
+            setClassicModal(false);
+            setNotify({
+              isOpen: true,
+              message: "Add student successfully.",
+              type: "success",
+            });
+            const data = await getAllTutor();
+            setData(data);
+            formik.handleReset();
+          } else if (result.status == 400) {
+            setNotify({
+              isOpen: true,
+              message: "Email is already exist.",
+              type: "error",
+            });
+          }
+        } else {
+          const result = await editTutor(values);
+          if (result.status == 200) {
+            setClassicModal(false);
+            setNotify({
+              isOpen: true,
+              message: "Edit student successfully.",
+              type: "success",
+            });
+            const data = await getAllTutor();
+            setData(data);
+            formik.handleReset();
+          } else {
+            setNotify({
+              isOpen: true,
+              message: "Something error...",
+              type: "error",
+            });
+          }
+        }
+      }
+    },
+  });
+
+  return (
+    <Dialog
+      classes={{
+        root: classes.center,
+        paper: classes.modal + " " + classes.myFormAdminWidth,
+      }}
+      open={classicModal}
+      TransitionComponent={Transition}
+      keepMounted
+      onClose={() => setClassicModal(false)}
+      aria-labelledby="classic-modal-slide-title"
+      aria-describedby="classic-modal-slide-description"
+    >
+      <form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
+        <DialogTitle
+          id="classic-modal-slide-title"
+          disableTypography
+          className={classes.modalHeader}
+        >
+          <IconButton
+            className={classes.modalCloseButton}
+            key="close"
+            aria-label="Close"
+            color="inherit"
+            onClick={() => setClassicModal(false)}
+          >
+            <Close className={classes.modalClose} />
+          </IconButton>
+          <h4 className={classes.modalTitle}>
+            {index == -1 ? "Add" : "Edit"} {role}
+          </h4>
+        </DialogTitle>
+        <DialogContent
+          id="classic-modal-slide-description"
+          className={classes.modalBody}
+        >
+          <GridContainer>
+            <GridItem xs={6}>
+              <Controls.Input
+                label="First Name"
+                name="first_name"
+                formik={formik}
+              />
+              {index == -1 ? (
+                <Controls.Input label="Email" name="email" formik={formik} />
+              ) : (
+                <Controls.Input
+                  label="Email"
+                  name="email"
+                  formik={formik}
+                  disabled
+                />
+              )}
+              <Controls.Input
+                label="Location"
+                name="location"
+                formik={formik}
+              />
+            </GridItem>
+            <GridItem xs={6}>
+              <Controls.Input
+                label="Last Name"
+                name="last_name"
+                formik={formik}
+              />
+              <Controls.Input label="Mobile" name="mobile" formik={formik} />
+              <Controls.DatePicker
+                name="DOB"
+                label="Date of Birth"
+                formik={formik}
+              />
+            </GridItem>
+          </GridContainer>
+        </DialogContent>
+        <DialogActions className={classes.modalFooter}>
+          <div>
+            <Button color="transparent" type="submit" simple>
+              Submit
+            </Button>
+            <Button color="warning" type="reset" simple>
+              Reset
+            </Button>
+          </div>
+        </DialogActions>
+      </form>
+    </Dialog>
+  );
+}
+///
+
+///
+export function CourseFormDialog(props) {
+  const classes = useStyles();
+  const {
+    classicModal,
+    setClassicModal,
+    myInitialValues,
+    setNotify,
+    index,
+    setData,
+  } = props;
+
+  const formik = useFormik({
+    initialValues: myInitialValues,
+    validationSchema: yup.object({
+      name: yup.string().required("Title is required"),
+      credits: yup
+        .number()
+        .required("Credits is required.")
+        .min(1, "More than 1"),
+      file: yup
+        .array()
+        .required("Not null")
+        .min(1, "Course must have at least one materials."),
+    }),
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      if (index == -1) {
+        const result = await addCourse(values);
+        if (result.status == 201) {
+          const data = await getAllCourse();
+          setData(data);
+          setClassicModal(false);
+          setNotify({
+            isOpen: true,
+            message: "Add course successfully.",
+            type: "success",
+          });
+        } else if (result.status != 201) {
+          setNotify({
+            isOpen: true,
+            message: "Something wrong...",
+            type: "error",
+          });
+        }
+      } else {
+        const result = await editCourse(values);
+        if (result.status == 201 || result.status == 200) {
+          const data = await getAllCourse();
+          setData(data);
+          setClassicModal(false);
+          setNotify({
+            isOpen: true,
+            message: "Edit course successfully.",
+            type: "success",
+          });
+        } else if (result.status != 201 && result.status != 200) {
+          setNotify({
+            isOpen: true,
+            message: "Something wrong...",
+            type: "error",
+          });
+        }
+      }
+    },
+  });
+
+  const myInitialFilesValue = myInitialValues.file.map(
+    (ele) =>
+      (ele = {
+        file: ele,
+        id: v4(),
+      })
+  );
+
+  const [files, setFiles] = React.useState(myInitialFilesValue);
+  const hiddenFileInput = React.useRef(null);
+
+  const handleClick = () => {
+    hiddenFileInput.current.click();
+  };
+
+  const handleAddFile = (event) => {
+    const newFiles = [...event.target.files].map(
+      (ele) => (ele = { file: ele, id: v4() })
+    );
+    setFiles([...files, ...newFiles]);
+  };
+
+  const handleDeleteFile = (id) => {
+    const newFilesList = files.filter((ele) => ele.id != id);
+    setFiles(newFilesList);
+  };
+
+  const handleReset = () => {
+    formik.handleReset();
+    setFiles(myInitialFilesValue);
+  };
+
+  React.useEffect(() => {
+    formik.setFieldValue("file", getFilesFromMyCustomList(files), false);
+    return null;
+  }, [files]);
+
+  React.useEffect(() => {
+    setFiles(
+      myInitialValues.file.map(
+        (ele) =>
+          (ele = {
+            file: ele,
+            id: v4(),
+          })
+      )
+    );
+    return null;
+  }, [myInitialValues]);
+
+  return (
+    <Dialog
+      classes={{
+        root: classes.center,
+        paper: classes.modal + " " + classes.myFormWidth,
+      }}
+      open={classicModal}
+      TransitionComponent={Transition}
+      keepMounted
+      onClose={() => setClassicModal(false)}
+      aria-labelledby="classic-modal-slide-title"
+      aria-describedby="classic-modal-slide-description"
+    >
+      <form onSubmit={formik.handleSubmit} onReset={handleReset}>
+        <DialogTitle
+          id="classic-modal-slide-title"
+          disableTypography
+          className={classes.modalHeader}
+        >
+          <IconButton
+            className={classes.modalCloseButton}
+            key="close"
+            aria-label="Close"
+            color="inherit"
+            onClick={() => setClassicModal(false)}
+          >
+            <Close className={classes.modalClose} />
+          </IconButton>
+          <h4 className={classes.modalTitle}>Course</h4>
+        </DialogTitle>
+        <DialogContent
+          id="classic-modal-slide-description"
+          className={classes.modalBody}
+        >
+          <GridContainer>
+            <GridItem xs={9}>
+              <CustomInput
+                labelText="Course name"
+                id="name"
+                name="name"
+                error={formik.touched.name && Boolean(formik.errors.name)}
+                onChange={formik.handleChange}
+                value={formik.values.name}
+                helperText={formik.touched.name && formik.errors.name}
+                formControlProps={{
+                  fullWidth: true,
+                }}
+                inputProps={{
+                  type: "text",
+                }}
+              />
+            </GridItem>
+            <GridItem xs={3}>
+              <CustomInput
+                labelText="Credits"
+                id="credits"
+                name="credits"
+                error={formik.touched.credits && Boolean(formik.errors.credits)}
+                onChange={formik.handleChange}
+                value={formik.values.credits}
+                helperText={formik.touched.credits && formik.errors.credits}
+                formControlProps={{
+                  fullWidth: true,
+                }}
+                inputProps={{
+                  type: "text",
+                }}
+              />
+            </GridItem>
+            <GridItem>
+              <CustomInput
+                labelText="Description"
+                id="description"
+                name="description"
+                multiline
+                error={
+                  formik.touched.description &&
+                  Boolean(formik.errors.description)
+                }
+                onChange={formik.handleChange}
+                value={formik.values.description}
+                helperText={
+                  formik.touched.description && formik.errors.description
+                }
+                formControlProps={{
+                  fullWidth: true,
+                }}
+                inputProps={{
+                  type: "text",
+                  rows: "3",
+                }}
+              />
+            </GridItem>
+            <Input
+              type="file"
+              inputRef={hiddenFileInput}
+              inputProps={{ multiple: true, accept: "application/pdf" }}
+              onChange={(e) => {
+                handleAddFile(e);
+              }}
+              className={classes.inputFile}
+            />
+            {formik.touched.file && formik.errors.file && (
+              <GridItem>
+                <FormHelperText style={{ color: "red" }}>
+                  {formik.touched.file && formik.errors.file}
+                </FormHelperText>
+              </GridItem>
+            )}
+            {files.map((item) => (
+              <GridItem
+                xs={12}
+                sm={6}
+                md={4}
+                className={
+                  classes.materialItem + " " + classes.materialItemCourses
+                }
+                key={item.id}
+              >
+                <SubmissionMaterial
+                  name={item.file.file_name || item.file.name}
                   id={item.id}
                   handleDeleteFile={handleDeleteFile}
                 />

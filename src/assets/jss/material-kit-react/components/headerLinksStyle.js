@@ -1,7 +1,6 @@
 import { defaultFont } from "assets/jss/material-kit-react.js";
 
 import tooltip from "assets/jss/material-kit-react/tooltipsStyle.js";
-
 const headerLinksStyle = (theme) => ({
   list: {
     ...defaultFont,
@@ -111,6 +110,41 @@ const headerLinksStyle = (theme) => ({
   ...tooltip,
   marginRight5: {
     marginRight: "5px",
+  },
+  buttonLink: {
+    [theme.breakpoints.down("sm")]: {
+      display: "flex",
+      margin: "10px 15px 0",
+      width: "-webkit-fill-available",
+      "& svg": {
+        width: "24px",
+        height: "30px",
+        marginRight: "15px",
+        marginLeft: "-15px",
+      },
+      "& .fab,& .fas,& .far,& .fal,& .material-icons": {
+        fontSize: "24px",
+        lineHeight: "30px",
+        width: "24px",
+        height: "30px",
+        marginRight: "15px",
+        marginLeft: "-15px",
+      },
+      "& > span": {
+        justifyContent: "flex-start",
+        width: "100%",
+        color: "#000",
+      },
+    },
+  },
+  linkText: {
+    margin: "0px",
+  },
+  manager: {
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+    },
+    display: "inline-block",
   },
 });
 
