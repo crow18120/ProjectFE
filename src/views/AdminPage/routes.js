@@ -18,7 +18,6 @@
 // @material-ui/icons
 import { Person, PersonOutline, Work, HomeWork } from "@material-ui/icons";
 // core components/views for Admin layout
-import TableList from "./Sections/TableList.js";
 import StudentList from "./Sections/StudentList.js";
 import TutorList from "./Sections/TutorList";
 import CourseList from "./Sections/CourseList.js";
@@ -38,13 +37,6 @@ const dashboardRoutes = [
     name: "Tutor List",
     icon: PersonOutline,
     component: TutorList,
-    layout: "/admin",
-  },
-  {
-    path: "/table",
-    name: "Table List",
-    icon: "content_paste",
-    component: TableList,
     layout: "/admin",
   },
   {

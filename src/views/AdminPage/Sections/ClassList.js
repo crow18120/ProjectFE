@@ -5,18 +5,17 @@ import { Box, CircularProgress } from "@material-ui/core";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import CourseTable from "components/Table/CourseTable.js";
+import ClassTable from "components/Table/ClassTable.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import Notification from "components/MyNotifications/Notification";
-import ViewFileDialog from "components/Dialog/ViewFileDialog";
+import ViewClassDialog from "components/Dialog/ViewClassDialog";
 
 import { usePromiseResult } from "use-promise-result";
-import { getAllCourse, deleteCourse } from "services/courseServices";
-import { CourseFormDialog } from "components/Dialog/MyCustomDialog";
+import { ClassFormDialog } from "components/Dialog/MyCustomDialog";
 import ConfirmDialog from "components/Dialog/MyConfirmDialog";
-import { getAllClass } from "services/classServices";
+import { getAllClass, deleteClass } from "services/classServices";
 
 const styles = {
   cardCategoryWhite: {
@@ -52,10 +51,9 @@ const useStyles = makeStyles(styles);
 
 const formValues = {
   name: "",
-  description: "",
-  credits: "",
-  file: [],
-  materials: [],
+  course: "",
+  tutor: "",
+  students: [],
 };
 
 export default function ClassList() {
@@ -83,10 +81,10 @@ export default function ClassList() {
 
   const [myData, setMyData] = React.useState([]);
 
-  const deleteItem = async (courseID) => {
-    const result = await deleteCourse(courseID);
+  const deleteItem = async (classID) => {
+    const result = await deleteClass(classID);
     if (result.status == 204) {
-      const newData = await getAllCourse();
+      const newData = await getAllClass();
       setMyData(newData);
       setConfirmDialog({
         ...confirmDialog,
@@ -94,7 +92,7 @@ export default function ClassList() {
       });
       setNotify({
         isOpen: true,
-        message: "Delete course successfully.",
+        message: "Delete class successfully.",
         type: "success",
       });
     } else if (result.status != 204) {
@@ -110,7 +108,7 @@ export default function ClassList() {
     index == -1
       ? setMyInitialValues({ ...formValues })
       : myData
-      ? setMyInitialValues({ ...myData[index], file: myData[index].materials })
+      ? setMyInitialValues({ ...myData[index] })
       : setMyInitialValues({ ...formValues });
   }, [index, myData]);
 
@@ -123,11 +121,11 @@ export default function ClassList() {
       <GridItem xs={12} sm={12} md={12}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Course Table</h4>
+            <h4 className={classes.cardTitleWhite}>Class Table</h4>
           </CardHeader>
           <CardBody>
             {success ? (
-              <CourseTable
+              <ClassTable
                 labelSearch="Search Class"
                 tableHeaderColor="primary"
                 tableHead={["ID", "Name", "Course", "Tutor"]}
@@ -157,8 +155,14 @@ export default function ClassList() {
           </CardBody>
         </Card>
       </GridItem>
-      <CourseFormDialog
-        myInitialValues={myInitialValues}
+      <ClassFormDialog
+        myInitialValues={{
+          id: myInitialValues.id,
+          name: myInitialValues.name,
+          course: myInitialValues.course,
+          tutor: myInitialValues.tutor,
+          students: myInitialValues.students,
+        }}
         classicModal={classicModal}
         setClassicModal={setClassicModal}
         setNotify={setNotify}
@@ -170,10 +174,10 @@ export default function ClassList() {
         setConfirmDialog={setConfirmDialog}
       />
       <Notification notify={notify} setNotify={setNotify} />
-      <ViewFileDialog
+      <ViewClassDialog
         classicModal={isOpen}
         setClassicModal={setIsOpen}
-        data={myInitialValues}
+        myData={myInitialValues}
       />
     </GridContainer>
   );

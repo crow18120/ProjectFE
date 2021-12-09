@@ -6,14 +6,25 @@ import {
   FormHelperText,
 } from "@material-ui/core";
 import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: theme.spacing(1),
+    width: "80%",
+  },
+}));
 
 export default function Select(props) {
-  const { name, label, options, formik } = props;
+  const { name, label, options, formik, ...other } = props;
+  const classes = useStyles();
 
   return (
     <FormControl
       variant="outlined"
       error={formik.touched[name] && Boolean(formik.errors[name])}
+      classes={{ root: classes.root }}
+      {...other}
     >
       <InputLabel>{label}</InputLabel>
       <MuiSelect
@@ -24,7 +35,7 @@ export default function Select(props) {
       >
         <MenuItem value="0">None</MenuItem>
         {options.map((item) => (
-          <MenuItem key={item.id} value={item.id}>
+          <MenuItem key={item.key} value={item.key}>
             {item.title}
           </MenuItem>
         ))}

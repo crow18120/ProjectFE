@@ -63,6 +63,15 @@ const classActivityStyle = {
       textAlign: "center",
     },
   },
+  avatarPerson_abcd: {
+    minWidth: "96px",
+    paddingRight: "0px",
+    "& img": {
+      width: "78px",
+      aspectRatio: "1",
+      textAlign: "center",
+    },
+  },
   name: {
     fontSize: "0.875rem",
     fontWeight: "400",
@@ -213,6 +222,14 @@ const classActivityStyle = {
     width: "100%",
     maxWidth: "100%",
     height: "100vh",
+  },
+  abcd: {
+    width: "80%",
+    maxWidth: "100%",
+    maxHeight: "100vh",
+  },
+  abcd_content: {
+    overflow: "hidden",
   },
 };
 

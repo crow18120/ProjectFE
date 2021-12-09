@@ -9,7 +9,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 
 // @material-ui/icons
-import { Notifications, Event } from "@material-ui/icons";
+import { Event } from "@material-ui/icons";
 
 // core components
 import CustomDropdown from "components/CustomDropdown/CustomDropdown.js";
@@ -51,11 +51,6 @@ export function MyCustomHeaderRightLinks(props) {
       <ListItem className={classes.listItem}>
         <Button color="transparent" className={classes.navLink}>
           <Event className={classes.icons} />
-        </Button>
-      </ListItem>
-      <ListItem className={classes.listItem}>
-        <Button color="transparent" className={classes.navLink}>
-          <Notifications className={classes.icons} />
         </Button>
       </ListItem>
       <ListItem className={classes.listItem}>

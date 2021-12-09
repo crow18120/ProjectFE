@@ -80,6 +80,77 @@ export const getAllClass = async () => {
   console.log(role);
 };
 
+export const addClass = async (values) => {
+  let formData = new FormData();
+  for (const key in values) {
+    if (key == "students") continue;
+    if (Object.hasOwnProperty.call(values, key)) {
+      const value = values[key];
+      formData.append(key, value);
+    }
+  }
+
+  const newClass = await axiosInstance.post("classes/class/", formData, {
+    headers: {
+      "Content-Type": `multipart/form-data boundary=${formData._boundary}`,
+    },
+    body: { formData },
+  });
+
+  if (values["students"].length != 0) {
+    for (const file in values["students"]) {
+      let formData2 = new FormData();
+      formData2.append("class_obj", newClass.data["id"]);
+      formData2.append("student", values["students"][file]);
+      await axiosInstance.post("classes/student/", formData2, {
+        headers: {
+          "Content-Type": `multipart/form-data boundary=${formData2._boundary}`,
+        },
+        body: { formData2 },
+      });
+    }
+  }
+  return newClass;
+};
+
+export const editClass = async (values) => {
+  const classStudent = await axiosInstance
+    .get(`classes/class-student-with-class/${values["id"]}/`)
+    .then((response) => response.data);
+  const currentStudents = classStudent.map((ele) => ele.student);
+  const deleteStudents = currentStudents.filter(
+    (ele) => !values["students"].includes(ele)
+  );
+  const addStudents = values["students"].filter(
+    (ele) => !currentStudents.includes(ele)
+  );
+
+  const listStudentDelete = classStudent.filter((ele) =>
+    deleteStudents.includes(ele.student)
+  );
+  listStudentDelete.map(
+    async (ele) => await axiosInstance.delete(`classes/student/${ele.id}`)
+  );
+  if (addStudents.length != 0) {
+    for (const file in addStudents) {
+      let formData2 = new FormData();
+      formData2.append("class_obj", values["id"]);
+      formData2.append("student", addStudents[file]);
+      await axiosInstance.post("classes/student/", formData2, {
+        headers: {
+          "Content-Type": `multipart/form-data boundary=${formData2._boundary}`,
+        },
+        body: { formData2 },
+      });
+    }
+  }
+  return getAllClass();
+};
+
+export const deleteClass = async (classID) => {
+  return await axiosInstance.delete(`classes/class/${classID}/`);
+};
+
 export const addClassActivity = async (values, classID) => {
   let formData = new FormData();
   values = {
@@ -101,7 +172,6 @@ export const addClassActivity = async (values, classID) => {
     },
     body: { formData },
   });
-  console.log(activity);
   if (values["file"].length != 0) {
     formData.append("activity", activity.data["id"]);
     for (const file in values["file"]) {

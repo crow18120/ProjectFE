@@ -1,6 +1,14 @@
 import React from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
+import {
+  Table,
+  TableHead,
+  TableCell,
+  TableRow,
+  TableBody,
+  TableContainer,
+} from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -49,6 +57,10 @@ import { editTutor, addTutor, getAllTutor } from "services/tutorServices";
 import { addCourse } from "services/courseServices";
 import { editCourse } from "services/courseServices";
 import { getAllCourse } from "services/courseServices";
+import { getStudentWithClass } from "services/classServices";
+import { addClass } from "services/classServices";
+import { getAllClass } from "services/classServices";
+import { editClass } from "services/classServices";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -1239,6 +1251,316 @@ export function CourseFormDialog(props) {
               </IconButton>
             </Tooltip>
           </div>
+          <div>
+            <Button color="transparent" type="submit" simple>
+              Submit
+            </Button>
+            <Button color="warning" type="reset" simple>
+              Reset
+            </Button>
+          </div>
+        </DialogActions>
+      </form>
+    </Dialog>
+  );
+}
+///
+
+export function ClassFormDialog(props) {
+  const classes = useStyles();
+  const {
+    classicModal,
+    setClassicModal,
+    myInitialValues,
+    setNotify,
+    index,
+    setData,
+  } = props;
+
+  const [allStudents, setAllStudents] = React.useState([]);
+  const [allTutors, setAllTutors] = React.useState([]);
+  const [allCourses, setAllCourses] = React.useState([]);
+  const [currentStudents, setCurrentStudents] = React.useState([]);
+
+  React.useEffect(async () => {
+    const data1 = await getAllStudent();
+    setAllStudents(
+      data1.map(
+        (ele) =>
+          (ele = {
+            key: ele.id,
+            id: ele.id,
+            first_name: ele.first_name,
+            last_name: ele.last_name,
+            email: ele.email,
+          })
+      )
+    );
+    const data2 = await getAllTutor();
+    setAllTutors(
+      data2.map(
+        (ele) =>
+          (ele = {
+            title: ele.first_name + " " + ele.last_name + " - " + ele.email,
+            key: ele.id,
+          })
+      )
+    );
+    const data3 = await getAllCourse();
+    setAllCourses(data3.map((ele) => (ele = { title: ele.name, key: ele.id })));
+  }, []);
+
+  React.useEffect(async () => {
+    if (myInitialValues.id) {
+      const data4 = await getStudentWithClass(myInitialValues.id);
+      setCurrentStudents(data4.map((ele) => ele.id));
+    } else {
+      setCurrentStudents([]);
+    }
+  }, [myInitialValues.id]);
+
+  const [students, setStudents] = React.useState([]);
+
+  React.useEffect(() => {
+    setStudents(currentStudents);
+  }, [currentStudents]);
+
+  React.useEffect(() => {
+    formik.setFieldValue("students", students, false);
+  }, [students]);
+
+  const columns = [
+    { id: "index", label: "No." },
+    { id: "name", label: "Name" },
+    {
+      id: "email",
+      label: "Email",
+    },
+  ];
+  console.log(index);
+  const formik = useFormik({
+    initialValues: myInitialValues,
+    validationSchema: yup.object({
+      name: yup.string().required("Class name is required."),
+      course: yup
+        .string()
+        .required("Course is required")
+        .min(2, "Course is required"),
+      tutor: yup
+        .string()
+        .required("Tutor is required")
+        .min(2, "Course is required"),
+    }),
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      if (index == -1) {
+        const result = await addClass(values);
+        if (result.status == 201) {
+          setClassicModal(false);
+          setNotify({
+            isOpen: true,
+            message: "Add class successfully.",
+            type: "success",
+          });
+          const data = await getAllClass();
+          setData(data);
+        } else {
+          setNotify({
+            isOpen: true,
+            message: "Something error...",
+            type: "error",
+          });
+        }
+      } else {
+        await editClass(values);
+        setClassicModal(false);
+        setNotify({
+          isOpen: true,
+          message: "Edit class successfully.",
+          type: "success",
+        });
+        const data = await getAllClass();
+        setData(data);
+      }
+    },
+  });
+
+  const handleReset = () => {
+    formik.handleReset();
+    setStudents(currentStudents);
+  };
+
+  return (
+    <Dialog
+      classes={{
+        root: classes.center,
+        paper: classes.modal + " " + classes.myFormAdminWidth,
+        paperScrollPaper: classes.abcd,
+      }}
+      open={classicModal}
+      TransitionComponent={Transition}
+      keepMounted
+      onClose={() => {
+        setClassicModal(false);
+        handleReset();
+      }}
+      aria-labelledby="classic-modal-slide-title"
+      aria-describedby="classic-modal-slide-description"
+    >
+      <form onSubmit={formik.handleSubmit} onReset={handleReset}>
+        <DialogTitle
+          id="classic-modal-slide-title"
+          disableTypography
+          className={classes.modalHeader}
+        >
+          <IconButton
+            className={classes.modalCloseButton}
+            key="close"
+            aria-label="Close"
+            color="inherit"
+            onClick={() => setClassicModal(false)}
+          >
+            <Close className={classes.modalClose} />
+          </IconButton>
+          <h4 className={classes.modalTitle}>
+            {index == -1 ? "Add Class" : "Edit Class"}
+          </h4>
+        </DialogTitle>
+        <DialogContent
+          id="classic-modal-slide-description"
+          className={classes.modalBody + " " + classes.abcd_content}
+        >
+          <GridContainer>
+            <GridItem xs={6}>
+              {index == -1 ? (
+                <Controls.Input
+                  label="Class Name"
+                  name="name"
+                  formik={formik}
+                />
+              ) : (
+                <Controls.Input
+                  label="Class Name"
+                  name="name"
+                  formik={formik}
+                  disabled
+                />
+              )}
+            </GridItem>
+            <GridItem xs={6}>
+              {index == -1 ? (
+                <Controls.Select
+                  label="Course"
+                  name="course"
+                  formik={formik}
+                  options={allCourses}
+                />
+              ) : (
+                <Controls.Select
+                  label="Course"
+                  name="course"
+                  formik={formik}
+                  options={allCourses}
+                  disabled
+                />
+              )}
+            </GridItem>
+            <GridItem xs={6}>
+              {index == -1 ? (
+                <Controls.Select
+                  label="Tutor"
+                  name="tutor"
+                  formik={formik}
+                  options={allTutors}
+                />
+              ) : (
+                <Controls.Select
+                  label="Tutor"
+                  name="tutor"
+                  formik={formik}
+                  options={allTutors}
+                  disabled
+                />
+              )}
+            </GridItem>
+            <GridItem xs={12}>
+              <TableContainer style={{ maxHeight: 340 }}>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      {columns.map((column) => (
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{ minWidth: column.minWidth }}
+                        >
+                          {column.label}
+                        </TableCell>
+                      ))}
+                      <TableCell>Action</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {allStudents.length != 0 ? (
+                      allStudents.map((row, index) => {
+                        return (
+                          <TableRow
+                            hover
+                            role="checkbox"
+                            tabIndex={-1}
+                            key={row.code}
+                          >
+                            {columns.map((column) => {
+                              const value = row[column.id];
+                              if (column.id == "index") {
+                                return (
+                                  <TableCell key={column.id}>
+                                    {index + 1}
+                                  </TableCell>
+                                );
+                              } else if (column.id == "name") {
+                                return (
+                                  <TableCell key={column.id}>
+                                    {row["first_name"] + " " + row["last_name"]}
+                                  </TableCell>
+                                );
+                              }
+                              return (
+                                <TableCell key={column.id}>{value}</TableCell>
+                              );
+                            })}
+                            <TableCell key={index + " " + 1}>
+                              <Checkbox
+                                checked={
+                                  students ? students.includes(row.id) : false
+                                }
+                                onClick={(e) => {
+                                  const value = e.target.checked;
+                                  if (value) {
+                                    setStudents((students) => {
+                                      return [...students, row.id];
+                                    });
+                                  } else {
+                                    setStudents(
+                                      students.filter((ele) => ele !== row.id)
+                                    );
+                                  }
+                                }}
+                              ></Checkbox>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    ) : (
+                      <TableRow></TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </GridItem>
+          </GridContainer>
+        </DialogContent>
+        <DialogActions className={classes.modalFooter}>
           <div>
             <Button color="transparent" type="submit" simple>
               Submit

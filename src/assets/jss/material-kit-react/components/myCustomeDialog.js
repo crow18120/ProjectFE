@@ -76,6 +76,14 @@ const javascriptStyles = {
   materialItemCourses: {
     border: "none !important",
   },
+  abcd: {
+    width: "80%",
+    maxWidth: "100%",
+    maxHeight: "100vh",
+  },
+  abcd_content: {
+    overflow: "hidden",
+  },
 };
 
 export default javascriptStyles;
