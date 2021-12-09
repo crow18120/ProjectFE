@@ -97,7 +97,7 @@ export default function ClassWorkPage(props) {
       : null;
   }, [success]);
   const { ...rest } = props;
-
+  console.log(data);
   return success ? (
     <div>
       <Header
@@ -206,6 +206,11 @@ export default function ClassWorkPage(props) {
                     data.class_detail.tutor_detail.last_name}{" "}
                   • {new Date(data.created_date).toLocaleString("en-US")}.
                 </h5>
+                {data.is_assignment ? (
+                  <h6 className={classes.deadlineTimer}>
+                    This classwork is Assignment.
+                  </h6>
+                ) : null}
                 <h6>
                   Due date:{" "}
                   {initialValues.dueDate == null ? (

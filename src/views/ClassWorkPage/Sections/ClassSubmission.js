@@ -127,7 +127,7 @@ export default function ClassSubmission(props) {
             <Input
               type="file"
               inputRef={hiddenFileInput}
-              inputProps={{ multiple: true }}
+              inputProps={{ multiple: true, accept: "application/pdf" }}
               onChange={handleAddFile}
               className={classes.inputFile}
             />

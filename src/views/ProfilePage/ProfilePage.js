@@ -33,8 +33,8 @@ const inforUser = {
   phone: "0352643890",
   location: "Thai Nguyen",
   DoB: "2000/10/27",
-  description: "Thich xem Sex",
-  interest: "Film, Sex, Girl, ...",
+  description: "Thich xem Film",
+  interest: "Film, Music, Football, ...",
 };
 
 export default function ProfilePage(props) {

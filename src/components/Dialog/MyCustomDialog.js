@@ -729,7 +729,7 @@ export function ClassWorkFormDialog(props) {
             <Input
               type="file"
               inputRef={hiddenFileInput}
-              inputProps={{ multiple: true }}
+              inputProps={{ multiple: true, accept: "application/pdf" }}
               onChange={(e) => {
                 handleAddFile(e);
               }}
