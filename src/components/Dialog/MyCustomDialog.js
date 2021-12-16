@@ -817,6 +817,7 @@ export function UserFormDialog(props) {
       DOB: yup
         .date("Date of birth is required.")
         .required("Date of birth is required."),
+      interest: yup.string().required("Interest is required."),
     }),
     enableReinitialize: true,
     onSubmit: async (values) => {
@@ -958,6 +959,11 @@ export function UserFormDialog(props) {
               <Controls.Input
                 label="Location"
                 name="location"
+                formik={formik}
+              />
+              <Controls.Input
+                label="Interest"
+                name="interest"
                 formik={formik}
               />
             </GridItem>

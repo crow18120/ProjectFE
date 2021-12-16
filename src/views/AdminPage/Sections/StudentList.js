@@ -55,6 +55,7 @@ const formValues = {
   location: "",
   mobile: "",
   DOB: null,
+  interest: "",
 };
 
 export default function StudentList() {
